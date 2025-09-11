@@ -1,12 +1,11 @@
 package me.jumptop.novelog.domain;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Entity
 @Table(name = "users")
 public class User {
@@ -26,6 +25,14 @@ public class User {
 
     @Builder
     public User(String name, String email, String picture) {
+        this.name = name;
+        this.email = email;
+        this.picture = picture;
+    }
 
+    public User update(String name, String picture) {
+        this.name = name;
+        this.picture = picture;
+        return this;
     }
 }

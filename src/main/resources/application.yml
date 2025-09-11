@@ -4,6 +4,7 @@ spring:
         url: jdbc:mysql://localhost:3306/novelog_db?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8
         username: root
         password: 1234
+        driver-class-name: com.mysql.cj.jdbc.Driver
 
     # JPA ? Hibernate ??
     jpa:
@@ -13,6 +14,7 @@ spring:
         properties:
           hibernate:
               format_sql: true
+        database-platform: org.hibernate.dialect.MySQLDialect
 
     #?? OAuth2 ????? ??
     security:
@@ -23,5 +25,10 @@ spring:
                         client-id: ${GOOGLE_CLIENT_ID}
                         client-secret: ${GOOGLE_CLIENT_SECRET}
                         scope:
-#                            - email
-#                            - profile
+                            - email
+                            - profile
+
+naver:
+    api:
+        client-id: ${NAVER_CLIENT_ID}
+        client-secret: ${NAVER_CLIENT_SECRET}
