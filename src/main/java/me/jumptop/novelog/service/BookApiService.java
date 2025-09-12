@@ -29,7 +29,7 @@ public class BookApiService {
                 .uri(uriBuilder -> uriBuilder
                         .path(apiURL)
                         .queryParam("query", query)
-                        .queryParam("display", 10)
+                        .queryParam("display", 20)
                         .build())
                 .header("X-Naver-Client-Id", clientId)
                 .header("X-Naver-Client-Secret", clientSecret)

@@ -26,7 +26,8 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         // 아래 명시한 주소는 로그인 여부와 상관없이 모두 접근 허용
-                        .requestMatchers("/", "/api/search/books", "/api/hello", "/css/**", "/images/**", "/js/**").permitAll()
+                        .requestMatchers("/", "/api/search/books", "/api/hello", "/api/user/me", "/css/**", "/images/**", "/js/**", "/login/oauth2/code/**", "/oauth2/authorization/**")
+                        .permitAll()
                         // 위에서 명시한 주소를 제외한 나머지 주소는 반드시 로그인(인증)된 사용자만 사용 가능
                         .anyRequest().authenticated()
                 )
@@ -41,6 +42,10 @@ public class SecurityConfig {
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(customOAuth2UserService)
                         )
+                        // 로그인 성공 후 리다이렉트 URL 설정
+                        .defaultSuccessUrl("http://localhost:8000/main", true)
+                        // 로그인 실패 시 리다이렉트 URL 설정
+                        .failureUrl("http://localhost:8000/login?error=true")
                 );
 
         return http.build();
