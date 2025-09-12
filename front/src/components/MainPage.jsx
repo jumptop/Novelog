@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './MainPage.css';
+import { Link } from 'react-router-dom';
 
 const MainPage = () => {
   const [query, setQuery] = useState('');
@@ -20,23 +21,23 @@ const MainPage = () => {
       
       if (response.ok) {
         const userData = await response.json();
-        setUser(userData);
+        
+        // 사용자 정보에 surveyCompleted가 false이면, 설문 페이지로 보냅니다.
+        if (userData && !userData.surveyCompleted) {
+          window.location.href = '/survey';
+        } else {
+          // 설문을 완료한 사용자라면, state에 사용자 정보를 저장하고 메인 페이지를 보여줍니다.
+          setUser(userData);
+        }
+
       } else if (response.status === 401) {
         // 로그인되지 않은 경우 로그인 페이지로 리다이렉트
         window.location.href = '/login';
       } else {
         console.error('사용자 정보 조회 실패:', response.status);
-        // 서버 오류의 경우 잠시 후 재시도
-        setTimeout(() => {
-          checkUserStatus();
-        }, 2000);
       }
     } catch (error) {
       console.error('사용자 상태 확인 중 오류:', error);
-      // 네트워크 오류의 경우 잠시 후 재시도
-      setTimeout(() => {
-        checkUserStatus();
-      }, 2000);
     }
   };
 
@@ -73,6 +74,12 @@ const MainPage = () => {
       });
   };
 
+  const handleReset = () => {
+    setQuery('');
+    setBooks([]);
+    window.scrollTo(0, 0);
+  }
+
   if (!user) {
     return (
       <div className="loading-container">
@@ -86,7 +93,7 @@ const MainPage = () => {
     <div className="main-container">
       <header className="main-header">
         <div className="header-content">
-          <h1 className="logo">Novelog</h1>
+          <Link to="/main" className="logo" onClick={handleReset}>Novelog</Link>
           <div className="user-section">
             <div className="user-info">
               <img src={user.picture} alt="프로필" className="user-avatar" />

@@ -23,16 +23,24 @@ public class User {
     @Column
     private String picture;
 
+    @Column(nullable = false)
+    private boolean surveyCompleted;
+
     @Builder
-    public User(String name, String email, String picture) {
+    public User(String name, String email, String picture, boolean surveyCompleted) {
         this.name = name;
         this.email = email;
         this.picture = picture;
+        this.surveyCompleted = surveyCompleted;
     }
 
     public User update(String name, String picture) {
         this.name = name;
         this.picture = picture;
         return this;
+    }
+
+    public void completeSurvey() {
+        this.surveyCompleted = true;
     }
 }

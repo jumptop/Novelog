@@ -48,6 +48,7 @@ public class OAuthAttributes {
                 .name(name)
                 .email(email)
                 .picture(picture)
+                .surveyCompleted(false) // 신규 사용자는 설문조사 여부를 false로 표시
                 //.role(Role.GUEST) // 기본 권한을 GUEST로 설정 (Role Enum 추가 필요)
                 .build();
     }

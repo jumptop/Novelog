@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './components/LoginPage';
 import MainPage from './components/MainPage';
+import SurveyPage from './pages/SurveyPage'; // SurveyPage를 import 합니다.
 import './App.css';
 
 function App() {
@@ -9,12 +10,11 @@ function App() {
     <Router>
       <div className="App">
         <Routes>
-          {/* 루트 경로는 로그인 페이지로 리다이렉트 */}
           <Route path="/" element={<Navigate to="/login" replace />} />
-          {/* 로그인 페이지 */}
           <Route path="/login" element={<LoginPage />} />
-          {/* 메인 페이지 (책 검색) */}
           <Route path="/main" element={<MainPage />} />
+          {/* 설문 페이지를 위한 경로를 추가합니다. */}
+          <Route path="/survey" element={<SurveyPage />} />
         </Routes>
       </div>
     </Router>
