@@ -43,4 +43,8 @@ public class User {
     public void completeSurvey() {
         this.surveyCompleted = true;
     }
+
+    public void resetSurvey() {
+        this.surveyCompleted = false;
+    }
 }

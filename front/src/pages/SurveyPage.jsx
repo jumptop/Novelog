@@ -2,18 +2,37 @@ import React, { useState } from 'react';
 import './SurveyPage.css';
 
 const SurveyPage = () => {
-  // 나중에 실제 설문 답변을 state로 관리할 수 있습니다.
-  // const [answers, setAnswers] = useState({});
+  // 사용자가 선택한 장르를 담을 state 배열
+  const [selectedGenres, setSelectedGenres] = useState([]);
+
+  // 체크박스 선택이 변경될 때마다 실행되는 함수
+  const handleCheckboxChange = (event) => {
+    const {value, checked} = event.target;
+
+    if (checked) {
+      // 체크박스가 선택되면, state 배열에 장르를 추가
+      setSelectedGenres(prev => [...prev, value]);
+    } else {
+      setSelectedGenres(prev => prev.filter(genre => genre != value));
+    }
+  };
+
 
   const handleSubmit = async () => {
+
+    // 선택된 장르가 하나도 없으면 경고
+    if (selectedGenres.length == 0) {
+      alert("선호하는 장르를 하나 이상 선택해주세요.");
+      return;
+    }
+
     // 1. 백엔드에 설문 완료 API를 호출합니다.
     try {
       const response = await fetch('http://localhost:8080/api/survey/complete', {
         method: 'POST',
         credentials: 'include',
-        // 나중에 설문 답변을 body에 담아 보낼 수 있습니다.
-        // headers: { 'Content-Type': 'application/json' },
-        // body: JSON.stringify(answers),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ genres : selectedGenres }),
       });
 
       if (response.ok) {
@@ -41,11 +60,11 @@ const SurveyPage = () => {
           <div className="question-group">
             <h3>선호하는 장르를 선택해주세요. (다중 선택 가능)</h3>
             {/* 예시 질문입니다. 나중에 실제 데이터로 변경할 수 있습니다. */}
-            <label><input type="checkbox" name="genre" value="fantasy" /> 판타지</label>
-            <label><input type="checkbox" name="genre" value="romance" /> 로맨스</label>
-            <label><input type="checkbox" name="genre" value="scifi" /> SF</label>
-            <label><input type="checkbox" name="genre" value="mystery" /> 미스터리/스릴러</label>
-            <label><input type="checkbox" name="genre" value="history" /> 시대극/역사</label>
+            <label><input type="checkbox" name="genre" value="fantasy" onChange={handleCheckboxChange} /> 판타지</label>
+            <label><input type="checkbox" name="genre" value="romance" onChange={handleCheckboxChange}/> 로맨스</label>
+            <label><input type="checkbox" name="genre" value="scifi" onChange={handleCheckboxChange}/> SF</label>
+            <label><input type="checkbox" name="genre" value="mystery" onChange={handleCheckboxChange}/> 미스터리/스릴러</label>
+            <label><input type="checkbox" name="genre" value="history" onChange={handleCheckboxChange}/> 시대극/역사</label>
           </div>
           
           {/* 여기에 다른 질문들을 추가할 수 있습니다. */}

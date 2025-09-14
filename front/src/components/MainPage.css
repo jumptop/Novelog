@@ -12,8 +12,6 @@
 }
 
 .header-content {
-  max-width: 1200px;
-  margin: 0 auto;
   padding: 16px 24px;
   display: flex;
   justify-content: space-between;
@@ -29,6 +27,7 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  text-decoration: none; /* Link 태그의 밑줄 제거 */
 }
 
 .user-section {
@@ -175,6 +174,7 @@
   object-fit: cover;
   border-radius: 6px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
 }
 
 .book-info {
@@ -213,22 +213,38 @@
   -webkit-box-orient: vertical;
 }
 
-.book-link {
+a.book-link {
+  text-decoration: none;
+  color: white;
   display: inline-block;
-  margin-top: 12px;
   padding: 8px 16px;
   background: #667eea;
-  color: white;
-  text-decoration: none;
   border-radius: 6px;
   font-size: 0.85rem;
   font-weight: 500;
+  text-align: center;
+  cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
 a.book-link:hover {
   background: #5a67d8;
   color: white;
+}
+
+.reset-btn {
+  background: #f6ad55;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.reset-btn:hover {
+  background: #dd6b20;
 }
 
 /* 반응형 디자인 */

@@ -8,7 +8,6 @@ const MainPage = () => {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
 
-  // 사용자 정보 확인
   useEffect(() => {
     checkUserStatus();
   }, []);
@@ -21,17 +20,12 @@ const MainPage = () => {
       
       if (response.ok) {
         const userData = await response.json();
-        
-        // 사용자 정보에 surveyCompleted가 false이면, 설문 페이지로 보냅니다.
         if (userData && !userData.surveyCompleted) {
           window.location.href = '/survey';
         } else {
-          // 설문을 완료한 사용자라면, state에 사용자 정보를 저장하고 메인 페이지를 보여줍니다.
           setUser(userData);
         }
-
       } else if (response.status === 401) {
-        // 로그인되지 않은 경우 로그인 페이지로 리다이렉트
         window.location.href = '/login';
       } else {
         console.error('사용자 정보 조회 실패:', response.status);
@@ -50,6 +44,29 @@ const MainPage = () => {
       window.location.href = '/login';
     } catch (error) {
       console.error('로그아웃 중 오류:', error);
+    }
+  };
+
+  const handleResetSurvey = async () => {
+    if (!confirm('정말로 설문 상태를 초기화하시겠습니까? 다시 로그인해야 합니다.')) {
+      return;
+    }
+    try {
+      const response = await fetch('http://localhost:8080/api/user/me/reset-survey', {
+        method: 'POST',
+        credentials: 'include',
+      });
+
+      if (response.ok) {
+        alert('설문 상태가 초기화되었습니다. 다시 로그인해주세요.');
+        handleLogout();
+      } else {
+        const errorText = await response.text();
+        alert(`초기화에 실패했습니다: ${errorText}`);
+      }
+    } catch (error) {
+      console.error('설문 초기화 중 오류:', error);
+      alert('서버와 통신 중 오류가 발생했습니다.');
     }
   };
 
@@ -99,6 +116,9 @@ const MainPage = () => {
               <img src={user.picture} alt="프로필" className="user-avatar" />
               <span className="user-name">{user.name}</span>
             </div>
+            <button className="reset-btn" onClick={handleResetSurvey}>
+              설문 초기화
+            </button>
             <button className="logout-btn" onClick={handleLogout}>
               로그아웃
             </button>

@@ -2,6 +2,7 @@ package me.jumptop.novelog.controller;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import me.jumptop.novelog.domain.User;
 import me.jumptop.novelog.dto.SessionUser;
 import me.jumptop.novelog.dto.SurveyRequestDto;
 import me.jumptop.novelog.service.SurveyService;
@@ -19,19 +20,21 @@ public class SurveyController {
 
     @PostMapping("/api/survey/complete")
     public ResponseEntity<String> completeSurvey(@RequestBody SurveyRequestDto requestDto, HttpSession session) {
-        // 세션에서 현재 로그인된 사용자 정보 불러오기
         SessionUser sessionUser = (SessionUser) session.getAttribute("user");
 
-        // 로그인된 사용자가 없다면, 401 Unauthorized 에러 응답
         if (sessionUser == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
         }
 
-        // 서비스 레이어에 설문 완료 처리를 위임 (사용자 이메일을 넘겨줌)
-        surveyService.completeSurvey(sessionUser.getEmail(), requestDto);
+        // 1. 서비스로부터 업데이트된 User 객체를 받습니다.
+        User updatedUser = surveyService.completeSurvey(sessionUser.getEmail(), requestDto);
 
-        // 성공적으로 처리되었음을 알리는 200 OK 응답
-        return ResponseEntity.ok("설문이 성공적으로 종료되었습니다.");
+        // 2. 최신 User 정보로 새로운 SessionUser 객체를 만듭니다.
+        SessionUser newSessionUser = new SessionUser(updatedUser);
+
+        // 3. 세션의 "user" 속성을 새로운 SessionUser 객체로 덮어씌웁니다.
+        session.setAttribute("user", newSessionUser);
+
+        return ResponseEntity.ok("설문이 정상적으로 완료되었습니다.");
     }
-
 }
