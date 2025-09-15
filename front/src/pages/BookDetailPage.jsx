@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom'; // URL 파라미터를 가져오기 위한 훅
+import { useParams } from 'react-router-dom';
 
-// 상세 페이지를 위한 기본 CSS (필요에 따라 별도 CSS 파일로 분리 가능)
+// 간단한 스타일 객체
 const detailPageStyles = {
   padding: '40px',
   maxWidth: '900px',
@@ -24,7 +24,7 @@ const detailInfoStyles = {
 };
 
 const BookDetailPage = () => {
-  const { isbn } = useParams(); // URL의 :isbn 부분을 가져옵니다.
+  const { id } = useParams(); // URL의 :id 부분을 가져옵니다.
   const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -32,13 +32,14 @@ const BookDetailPage = () => {
     const fetchBookDetails = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`http://localhost:8080/api/books/${isbn}`);
+        // API 경로를 Google Books ID로 조회하도록 수정
+        const response = await fetch(`http://localhost:8080/api/books/${id}`);
         if (response.ok) {
           const bookData = await response.json();
           setBook(bookData);
         } else {
           console.error("책 정보를 가져오는 데 실패했습니다.");
-          setBook(null); // 실패 시 book state를 null로 설정
+          setBook(null);
         }
       } catch (error) {
         console.error("API 호출 중 오류:", error);
@@ -47,10 +48,10 @@ const BookDetailPage = () => {
       }
     };
 
-    if (isbn) {
+    if (id) {
       fetchBookDetails();
     }
-  }, [isbn]); // isbn 값이 바뀔 때마다 API를 다시 호출
+  }, [id]); // id 값이 바뀔 때마다 API를 다시 호출
 
   if (loading) {
     return <div>Loading...</div>;
@@ -60,18 +61,21 @@ const BookDetailPage = () => {
     return <div>책 정보를 찾을 수 없습니다.</div>;
   }
 
+  // Google Books API 데이터 구조에 맞게 렌더링 로직 수정
+  const { volumeInfo } = book;
+
   return (
     <div style={detailPageStyles}>
-      <img src={book.image} alt={book.title} style={detailImageStyles} />
+      <img src={volumeInfo.imageLinks?.thumbnail} alt={volumeInfo.title} style={detailImageStyles} />
       <div style={detailInfoStyles}>
-        <h1 dangerouslySetInnerHTML={{ __html: book.title }}></h1>
-        <h2>{book.author}</h2>
-        <p><strong>출판사:</strong> {book.publisher}</p>
-        <p><strong>출간일:</strong> {book.pubdate}</p>
+        <h1>{volumeInfo.title}</h1>
+        <h2>{volumeInfo.authors?.join(', ')}</h2>
+        <p><strong>출판사:</strong> {volumeInfo.publisher}</p>
+        <p><strong>출간일:</strong> {volumeInfo.publishedDate}</p>
         <hr />
-        <p dangerouslySetInnerHTML={{ __html: book.description }}></p>
-        <a href={book.link} target="_blank" rel="noopener noreferrer">
-          네이버 도서에서 더 보기
+        <p>{volumeInfo.description}</p>
+        <a href={volumeInfo.infoLink} target="_blank" rel="noopener noreferrer">
+          Google Books에서 더 보기
         </a>
       </div>
     </div>

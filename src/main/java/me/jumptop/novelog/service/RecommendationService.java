@@ -20,7 +20,7 @@ public class RecommendationService {
     private final UserRepository userRepository;
     private final SurveyAnswerRepository surveyAnswerRepository;
     private final GeminiService geminiService;
-    private final BookApiService bookApiService;
+    private final BookApiService bookApiService; // BookApiService를 주입받도록 추가
 
     public List<BookResponseDto.BookItem> getRecommendationsForUser(String email) {
         User user = userRepository.findByEmail(email)
@@ -37,7 +37,7 @@ public class RecommendationService {
 
         String prompt = String.format(
             "A user likes the following book genres: [%s]. " +
-            "Based on these preferences, recommend exactly 3 Korean novel titles. " +
+            "Based on these preferences, recommend 3 Korean novel titles. " +
             "Please provide only the titles, separated by commas, without any other introductory text or numbering. " +
             "For example: Title 1,Title 2,Title 3",
             preferredGenres
@@ -46,11 +46,12 @@ public class RecommendationService {
         String geminiResponse = geminiService.generateContent(prompt);
         List<String> recommendedTitles = List.of(geminiResponse.split(","));
 
+        // 각 제목으로 Google Books API를 검색하여 상세 정보를 가져옵니다.
         return recommendedTitles.stream()
                 .map(title -> {
                     try {
                         BookResponseDto searchResult = bookApiService.searchBooks(title.trim());
-                        if (searchResult != null && !searchResult.getItems().isEmpty()) {
+                        if (searchResult != null && searchResult.getItems() != null && !searchResult.getItems().isEmpty()) {
                             return searchResult.getItems().get(0);
                         }
                     } catch (Exception e) {

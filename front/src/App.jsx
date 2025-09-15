@@ -4,7 +4,7 @@ import LoginPage from './components/LoginPage';
 import MainPage from './components/MainPage';
 import SurveyPage from './pages/SurveyPage';
 import RecommendationPage from './pages/RecommendationPage';
-import BookDetailPage from './pages/BookDetailPage'; // 새로 만들 페이지 import
+import BookDetailPage from './pages/BookDetailPage';
 import './App.css';
 
 function App() {
@@ -17,8 +17,8 @@ function App() {
           <Route path="/main" element={<MainPage />} />
           <Route path="/survey" element={<SurveyPage />} />
           <Route path="/recommendations" element={<RecommendationPage />} />
-          {/* 책 상세 페이지를 위한 동적 라우트 추가 */}
-          <Route path="/book/:isbn" element={<BookDetailPage />} />
+          {/* 상세 페이지 주소를 Google Books ID 기반으로 변경 */}
+          <Route path="/book/:id" element={<BookDetailPage />} />
         </Routes>
       </div>
     </Router>

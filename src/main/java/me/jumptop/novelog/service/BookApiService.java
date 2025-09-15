@@ -1,40 +1,50 @@
-package me.jumptop.novelog.service;// 네이버 검색 API 예제 - 블로그 검색
-
+package me.jumptop.novelog.service;
 
 import me.jumptop.novelog.dto.BookResponseDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
-
 @Service
 public class BookApiService {
 
     private final WebClient webClient;
 
-    @Value("${naver.api.client-id}")
-    private String clientId;
+    @Value("${google.books.api.url}")
+    private String apiUrl;
 
-    @Value("${naver.api.client-secret}")
-    private String clientSecret;
+    @Value("${google.books.api.key}")
+    private String apiKey;
 
-    public BookApiService(WebClient webClient) {
-        this.webClient = webClient;
+    public BookApiService(WebClient.Builder webClientBuilder) {
+        this.webClient = webClientBuilder.build();
     }
 
     public BookResponseDto searchBooks(String query) {
-        String apiURL = "/v1/search/book.json";
-
         return webClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .path(apiURL)
-                        .queryParam("query", query)
-                        .queryParam("display", 20)
+                .uri(apiUrl, uriBuilder -> uriBuilder
+                        .queryParam("q", query)
+                        .queryParam("key", apiKey)
+                        .queryParam("maxResults", 20)
                         .build())
-                .header("X-Naver-Client-Id", clientId)
-                .header("X-Naver-Client-Secret", clientSecret)
                 .retrieve()
                 .bodyToMono(BookResponseDto.class)
+                .block();
+    }
+
+    /**
+     * Google Books API의 볼륨 ID로 책 한 권의 정보를 가져옵니다.
+     * @param id 책의 고유 볼륨 ID
+     * @return 책 한 권의 상세 정보
+     */
+    public BookResponseDto.BookItem getBookById(String id) {
+        String detailApiUrl = apiUrl + "/" + id;
+        return webClient.get()
+                .uri(detailApiUrl, uriBuilder -> uriBuilder
+                        .queryParam("key", apiKey)
+                        .build())
+                .retrieve()
+                .bodyToMono(BookResponseDto.BookItem.class)
                 .block();
     }
 }

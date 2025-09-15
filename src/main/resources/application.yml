@@ -1,22 +1,19 @@
 spring:
-    # ?????? ?? ??
     datasource:
         url: jdbc:mysql://localhost:3306/novelog_db?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8
         username: root
         password: 1234
         driver-class-name: com.mysql.cj.jdbc.Driver
 
-    # JPA ? Hibernate ??
     jpa:
         show-sql: true
         hibernate:
-            ddl-auto: update # validate??? ??, update? ?? ???? ???? ?? ??? ??
+            ddl-auto: update
         properties:
           hibernate:
               format_sql: true
         database-platform: org.hibernate.dialect.MySQLDialect
 
-    #?? OAuth2 ????? ??
     security:
         oauth2:
             client:
@@ -28,12 +25,15 @@ spring:
                             - email
                             - profile
 
-naver:
+# Google Books API 설정
+google:
+  books:
     api:
-        client-id: ${NAVER_CLIENT_ID}
-        client-secret: ${NAVER_CLIENT_SECRET}
+      url: 'https://www.googleapis.com/books/v1/volumes'
+      key: ${GOOGLE_BOOKS_API_KEY}
 
+# Gemini API 설정 추가
 gemini:
-    api:
-        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent
-        key: ${GEMINI_API_KEY}
+  api:
+    url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent'
+    key: ${GEMINI_API_KEY}

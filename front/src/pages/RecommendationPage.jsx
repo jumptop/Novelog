@@ -2,16 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './RecommendationPage.css';
 
+// BookPodiumCard 컴포넌트를 Google Books API 구조에 맞게 수정
 const BookPodiumCard = ({ book, rank }) => {
   if (!book) return null;
+  const { id, volumeInfo } = book;
+
   return (
-    <Link to={`/book/${book.isbn}`} className={`podium-card ${rank}`}>
+    <Link to={`/book/${id}`} className={`podium-card ${rank}`}>
       <div className="podium-rank-indicator">{rank === 'gold' ? '🥇' : rank === 'silver' ? '🥈' : '🥉'}</div>
-      <img src={book.image} alt={book.title} className="podium-book-image" />
+      <img src={volumeInfo.imageLinks?.thumbnail} alt={volumeInfo.title} className="podium-book-image" />
       <div className="podium-book-info">
-        <h3 className="podium-book-title" dangerouslySetInnerHTML={{ __html: book.title }}></h3>
-        <p className="podium-book-author">{book.author}</p>
-        <p className="podium-book-publisher">{book.publisher}</p>
+        <h3 className="podium-book-title">{volumeInfo.title}</h3>
+        <p className="podium-book-author">{volumeInfo.authors?.join(', ')}</p>
+        <p className="podium-book-publisher">{volumeInfo.publisher}</p>
       </div>
     </Link>
   );

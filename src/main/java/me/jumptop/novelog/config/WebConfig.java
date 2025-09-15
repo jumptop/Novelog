@@ -8,9 +8,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
     @Bean
-    public WebClient webClient() {
-        return WebClient.builder()
-                .baseUrl("https://openapi.naver.com")
-                .build();
+    public WebClient.Builder webClientBuilder() {
+        return WebClient.builder();
     }
 }
