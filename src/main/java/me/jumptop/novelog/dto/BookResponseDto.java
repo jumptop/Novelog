@@ -1,19 +1,18 @@
 package me.jumptop.novelog.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
-import java.util.Map;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BookResponseDto {
-    // Google Books API는 책 목록을 'items' 키로 반환합니다.
     private List<BookItem> items;
 
     @Getter
@@ -21,9 +20,7 @@ public class BookResponseDto {
     @NoArgsConstructor
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class BookItem {
-        // 책의 고유 ID
         private String id;
-        // 실제 책 정보가 담긴 객체
         private VolumeInfo volumeInfo;
     }
 
@@ -32,18 +29,33 @@ public class BookResponseDto {
     @NoArgsConstructor
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class VolumeInfo {
+        @JsonProperty("title")
         private String title;
-        // 저자는 여러 명일 수 있어 배열로 제공됩니다.
+
+        @JsonProperty("authors")
         private List<String> authors;
+
+        @JsonProperty("publisher")
         private String publisher;
+
+        @JsonProperty("publishedDate")
         private String publishedDate;
+
+        @JsonProperty("description")
         private String description;
-        // 장르 정보
+
+        @JsonProperty("categories")
         private List<String> categories;
-        // 이미지 링크가 담긴 객체
+
+        @JsonProperty("imageLinks")
         private ImageLinks imageLinks;
-        // ISBN 정보를 담는 객체 리스트
+
+        @JsonProperty("industryIdentifiers")
         private List<IndustryIdentifier> industryIdentifiers;
+
+        // [추가된 필드] Google Books 정보 페이지 링크
+        @JsonProperty("infoLink")
+        private String infoLink;
     }
 
     @Getter
@@ -51,7 +63,7 @@ public class BookResponseDto {
     @NoArgsConstructor
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class ImageLinks {
-        // 다양한 크기의 이미지 중 썸네일을 사용합니다.
+        @JsonProperty("thumbnail")
         private String thumbnail;
     }
 

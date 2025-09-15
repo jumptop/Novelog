@@ -10,7 +10,8 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class SurveyRequestDto {
-
-    // 프론트에서 보낸 장르 목록을 이 리스트로 받기
+    // 1페이지: 장르 목록
     private List<String> genres;
+    // 2페이지: 인생 책
+    private String favoriteBook;
 }

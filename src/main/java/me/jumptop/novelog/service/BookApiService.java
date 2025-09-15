@@ -39,6 +39,7 @@ public class BookApiService {
      */
     public BookResponseDto.BookItem getBookById(String id) {
         String detailApiUrl = apiUrl + "/" + id;
+        // uri 생성 방식을 안정적인 방식으로 수정
         return webClient.get()
                 .uri(detailApiUrl, uriBuilder -> uriBuilder
                         .queryParam("key", apiKey)

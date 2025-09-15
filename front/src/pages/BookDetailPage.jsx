@@ -8,7 +8,8 @@ const detailPageStyles = {
   margin: '0 auto',
   display: 'flex',
   gap: '40px',
-  alignItems: 'flex-start'
+  alignItems: 'flex-start',
+  color: '#213547' // 글자색을 어두운 색으로 명시적으로 지정
 };
 
 const detailImageStyles = {
@@ -24,7 +25,7 @@ const detailInfoStyles = {
 };
 
 const BookDetailPage = () => {
-  const { id } = useParams(); // URL의 :id 부분을 가져옵니다.
+  const { id } = useParams();
   const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -32,8 +33,9 @@ const BookDetailPage = () => {
     const fetchBookDetails = async () => {
       setLoading(true);
       try {
-        // API 경로를 Google Books ID로 조회하도록 수정
-        const response = await fetch(`http://localhost:8080/api/books/${id}`);
+        const response = await fetch(`http://localhost:8080/api/books/${id}`, {
+          credentials: 'include'
+        });
         if (response.ok) {
           const bookData = await response.json();
           setBook(bookData);
@@ -51,7 +53,7 @@ const BookDetailPage = () => {
     if (id) {
       fetchBookDetails();
     }
-  }, [id]); // id 값이 바뀔 때마다 API를 다시 호출
+  }, [id]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -61,7 +63,6 @@ const BookDetailPage = () => {
     return <div>책 정보를 찾을 수 없습니다.</div>;
   }
 
-  // Google Books API 데이터 구조에 맞게 렌더링 로직 수정
   const { volumeInfo } = book;
 
   return (
@@ -73,7 +74,8 @@ const BookDetailPage = () => {
         <p><strong>출판사:</strong> {volumeInfo.publisher}</p>
         <p><strong>출간일:</strong> {volumeInfo.publishedDate}</p>
         <hr />
-        <p>{volumeInfo.description}</p>
+        {/* description이 HTML 태그를 포함할 수 있으므로, dangerouslySetInnerHTML 사용 */}
+        <p dangerouslySetInnerHTML={{ __html: volumeInfo.description }}></p>
         <a href={volumeInfo.infoLink} target="_blank" rel="noopener noreferrer">
           Google Books에서 더 보기
         </a>

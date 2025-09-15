@@ -8,6 +8,7 @@ import me.jumptop.novelog.repository.SurveyAnswerRepository;
 import me.jumptop.novelog.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -18,29 +19,37 @@ public class SurveyService {
     private final UserRepository userRepository;
     private final SurveyAnswerRepository surveyAnswerRepository;
 
-    /**
-     * 반환 타입을 void에서 User로 변경합니다.
-     * @return 업데이트된 User 엔티티
-     */
     @Transactional
     public User completeSurvey(String email, SurveyRequestDto requestDto) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다. email=" + email));
 
-        List<String> genres = requestDto.getGenres();
-        for (String genre : genres) {
+        // 1. 장르 답변 저장
+        if (requestDto.getGenres() != null && !requestDto.getGenres().isEmpty()) {
+            for (String genre : requestDto.getGenres()) {
+                SurveyAnswer answer = SurveyAnswer.builder()
+                        .user(user)
+                        .category("GENRE")
+                        .content(genre)
+                        .build();
+                surveyAnswerRepository.save(answer);
+            }
+        }
+
+        // 2. 인생 책 답변 저장 (내용이 있을 경우에만)
+        if (StringUtils.hasText(requestDto.getFavoriteBook())) {
             SurveyAnswer answer = SurveyAnswer.builder()
                     .user(user)
-                    .category("GENRE")
-                    .content(genre)
+                    .category("FAVORITE_BOOK")
+                    .content(requestDto.getFavoriteBook())
                     .build();
             surveyAnswerRepository.save(answer);
         }
 
+        // 3. 사용자의 설문 완료 상태를 true로 변경
         user.completeSurvey();
         userRepository.save(user);
 
-        // 최신 상태의 user 객체를 반환합니다.
         return user;
     }
 
@@ -48,7 +57,6 @@ public class SurveyService {
     public void resetSurveyStatus(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다. email=" + email));
-
         user.resetSurvey();
         userRepository.save(user);
     }

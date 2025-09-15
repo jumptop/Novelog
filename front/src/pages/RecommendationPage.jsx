@@ -2,14 +2,20 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './RecommendationPage.css';
 
-// BookPodiumCard 컴포넌트를 Google Books API 구조에 맞게 수정
+const rankInfo = {
+  gold: { emoji: '🥇', text: '1st' },
+  silver: { emoji: '🥈', text: '2nd' },
+  bronze: { emoji: '🥉', text: '3rd' },
+};
+
 const BookPodiumCard = ({ book, rank }) => {
   if (!book) return null;
+
   const { id, volumeInfo } = book;
 
   return (
     <Link to={`/book/${id}`} className={`podium-card ${rank}`}>
-      <div className="podium-rank-indicator">{rank === 'gold' ? '🥇' : rank === 'silver' ? '🥈' : '🥉'}</div>
+      <div className="podium-rank-indicator">{rankInfo[rank].emoji}</div>
       <img src={volumeInfo.imageLinks?.thumbnail} alt={volumeInfo.title} className="podium-book-image" />
       <div className="podium-book-info">
         <h3 className="podium-book-title">{volumeInfo.title}</h3>
@@ -52,6 +58,10 @@ const RecommendationPage = () => {
 
   return (
     <div className="reco-page-container">
+      <Link to="/main" className="back-to-main-btn">
+        &larr; 메인으로 돌아가기
+      </Link>
+
       <div className="reco-header">
         <h1>Gemini의 도서 추천</h1>
         <p>당신의 설문 결과를 바탕으로 Gemini가 추천하는 책들입니다.</p>

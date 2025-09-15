@@ -30,21 +30,24 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  margin-top: 40px; /* 이모지가 들어갈 공간 확보 */
+  margin-top: 40px;
 }
 
 .podium-card {
-  position: relative; /* 이모지 위치의 기준이 되도록 설정 */
+  position: relative;
   background: white;
   border-radius: 12px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   padding: 24px;
-  padding-top: 30px; /* 이모지 공간만큼 안쪽 패딩 추가 */
+  padding-top: 30px;
   text-align: center;
   transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
   align-items: center;
+  /* Link 태그의 기본 스타일을 제거합니다. */
+  text-decoration: none;
+  color: inherit;
 }
 
 .podium-card:hover {
@@ -52,13 +55,12 @@
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
 }
 
-/* 새로 추가된 이모지 스타일 */
 .podium-rank-indicator {
   position: absolute;
-  top: -25px; /* 카드 위로 살짝 올라오도록 설정 */
+  top: -25px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 50px; /* 이모지 크기 */
+  font-size: 50px;
   line-height: 1;
   text-shadow: 0 3px 6px rgba(0,0,0,0.2);
 }
@@ -86,13 +88,11 @@
   margin: 2px 0;
 }
 
-/* 금메달 스타일 (중앙, 가장 큼) */
 .podium-card.gold {
   width: 280px;
   z-index: 10;
 }
 
-/* 은메달 스타일 (왼쪽 아래) */
 .podium-card.silver {
   position: absolute;
   width: 240px;
@@ -101,7 +101,6 @@
   z-index: 5;
 }
 
-/* 동메달 스타일 (오른쪽 아래) */
 .podium-card.bronze {
   position: absolute;
   width: 240px;
@@ -110,20 +109,32 @@
   z-index: 5;
 }
 
-/* 화면이 좁아지면 수직으로 쌓이도록 변경 */
 @media (max-width: 900px) {
   .podium-container {
     flex-direction: column;
     align-items: center;
-    gap: 60px; /* 모바일에서는 간격을 더 줌 */
+    gap: 60px;
     min-height: auto;
     margin-top: 60px;
   }
   .podium-card.silver,
   .podium-card.bronze {
-    position: static; /* absolute 위치 해제 */
+    position: static;
     top: auto;
     left: auto;
     right: auto;
   }
+}
+
+.back-to-main-btn {
+  display: inline-block;
+  margin-bottom: 24px;
+  font-weight: 600;
+  color: #4a5568;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.back-to-main-btn:hover {
+  color: #667eea;
 }
