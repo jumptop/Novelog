@@ -21,6 +21,28 @@
 .reco-header p {
   font-size: 1.1rem;
   color: #718096;
+  margin-bottom: 24px;
+}
+
+.reco-btn {
+  background: #667eea;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.reco-btn:hover:not(:disabled) {
+  background: #5a67d8;
+}
+
+.reco-btn:disabled {
+  background: #a0aec0;
+  cursor: not-allowed;
 }
 
 .podium-container {
@@ -108,10 +130,30 @@
   z-index: 5;
 }
 
+/* 스크롤 유도 화살표 스타일 */
+.scroll-down-indicator {
+  text-align: center;
+  margin-top: 40px; /* 시상대와의 간격 */
+  margin-bottom: 40px; /* 구분선과의 간격 */
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-15px);
+  }
+  60% {
+    transform: translateY(-10px);
+  }
+}
+
 .reco-divider {
   border: none;
   border-top: 1px solid #e2e8f0;
-  margin: 80px 0 40px 0;
+  margin: 0 0 40px 0; /* 화살표와의 간격 조정 */
 }
 
 .other-reco-section h2 {

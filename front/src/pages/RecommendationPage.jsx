@@ -1,12 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import './RecommendationPage.css';
+
+const rankInfo = {
+  gold: { emoji: '🥇', text: '1st' },
+  silver: { emoji: '🥈', text: '2nd' },
+  bronze: { emoji: '🥉', text: '3rd' },
+};
 
 const BookPodiumCard = ({ book, rank }) => {
   if (!book) return null;
   return (
     <a href={book.link} target="_blank" rel="noopener noreferrer" className={`podium-card ${rank}`}>
-      <div className="podium-rank-indicator">{rank === 'gold' ? '🥇' : rank === 'silver' ? '🥈' : '🥉'}</div>
+      <div className="podium-rank-indicator">{rankInfo[rank].emoji}</div>
       <img src={book.image} alt={book.title} className="podium-book-image" />
       <div className="podium-book-info">
         <h3 className="podium-book-title" dangerouslySetInnerHTML={{ __html: book.title }}></h3>
@@ -21,27 +27,29 @@ const RecommendationPage = () => {
   const [recommendations, setRecommendations] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchRecommendations = async () => {
-      try {
-        const response = await fetch('http://localhost:8080/api/recommendations', {
-          credentials: 'include',
-        });
-        if (response.ok) {
-          const recoBooks = await response.json();
-          setRecommendations(recoBooks);
-        } else {
-          alert('추천 목록을 가져오는 데 실패했습니다.');
-        }
-      } catch (error) {
-        console.error("추천 API 호출 중 오류:", error);
-        alert('추천 목록을 가져오는 중 오류가 발생했습니다.');
-      } finally {
-        setLoading(false);
+  const fetchRecommendations = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await fetch('http://localhost:8080/api/recommendations', {
+        credentials: 'include',
+      });
+      if (response.ok) {
+        const recoBooks = await response.json();
+        setRecommendations(recoBooks);
+      } else {
+        alert('추천 목록을 가져오는 데 실패했습니다.');
       }
-    };
-    fetchRecommendations();
+    } catch (error) {
+      console.error("추천 API 호출 중 오류:", error);
+      alert('추천 목록을 가져오는 중 오류가 발생했습니다.');
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchRecommendations();
+  }, [fetchRecommendations]);
 
   const goldMedalBook = recommendations.length > 0 ? recommendations[0] : null;
   const silverMedalBook = recommendations.length > 1 ? recommendations[1] : null;
@@ -57,6 +65,9 @@ const RecommendationPage = () => {
       <div className="reco-header">
         <h1>Gemini의 도서 추천</h1>
         <p>당신의 설문 결과를 바탕으로 Gemini가 추천하는 책들입니다.</p>
+        <button onClick={fetchRecommendations} className="reco-btn" disabled={loading}>
+          {loading ? '추천받는 중...' : '새로 추천받기'}
+        </button>
       </div>
 
       {loading ? (
@@ -74,6 +85,12 @@ const RecommendationPage = () => {
 
           {otherRecommendations.length > 0 && (
             <>
+              <div className="scroll-down-indicator">
+                {/* 화살표 색상을 더 진하게 변경합니다. */}
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 5V19M12 19L19 12M12 19L5 12" stroke="#4A5568" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
               <hr className="reco-divider" />
               <div className="other-reco-section">
                 <h2>이 책들도 소개합니다</h2>
