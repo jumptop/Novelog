@@ -156,26 +156,26 @@ const MainPage = () => {
           </div>
         )}
 
-        {/* 검색 결과 렌더링 로직을 Google Books API 구조에 맞게 수정 */}
+        {/* 검색 결과 렌더링 로직을 Naver API 구조에 맞게 수정 */}
         <div className="book-list">
           {books.map((book) => (
-            <div key={book.id} className="book-item">
-              <img src={book.volumeInfo.imageLinks?.thumbnail} alt={book.volumeInfo.title} className="book-image" />
+            <div key={book.isbn} className="book-item">
+              <img src={book.image} alt={book.title} className="book-image" />
               <div className="book-info">
-                <h3 className="book-title">{book.volumeInfo.title}</h3>
-                <p className="book-author"><strong>저자:</strong> {book.volumeInfo.authors?.join(', ')}</p>
-                <p className="book-publisher"><strong>출판사:</strong> {book.volumeInfo.publisher}</p>
-                {book.volumeInfo.description && (
-                  <p className="book-description">{book.volumeInfo.description}</p>
+                <h3 className="book-title" dangerouslySetInnerHTML={{ __html: book.title }}></h3>
+                <p className="book-author"><strong>저자:</strong> {book.author}</p>
+                <p className="book-publisher"><strong>출판사:</strong> {book.publisher}</p>
+                {book.description && (
+                  <p className="book-description" dangerouslySetInnerHTML={{ __html: book.description }}></p>
                 )}
-                {book.volumeInfo.infoLink && (
+                {book.link && (
                   <a 
-                    href={book.volumeInfo.infoLink} 
+                    href={book.link} 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="book-link"
                   >
-                    Google Books에서 보기
+                    네이버 도서에서 보기
                   </a>
                 )}
               </div>

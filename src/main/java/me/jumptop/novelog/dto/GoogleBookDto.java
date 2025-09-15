@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class BookResponseDto {
+public class GoogleBookDto {
     private List<BookItem> items;
 
     @Getter
@@ -29,33 +29,14 @@ public class BookResponseDto {
     @NoArgsConstructor
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class VolumeInfo {
-        @JsonProperty("title")
         private String title;
-
-        @JsonProperty("authors")
         private List<String> authors;
-
-        @JsonProperty("publisher")
         private String publisher;
-
-        @JsonProperty("publishedDate")
         private String publishedDate;
-
-        @JsonProperty("description")
         private String description;
-
-        @JsonProperty("categories")
         private List<String> categories;
-
-        @JsonProperty("imageLinks")
         private ImageLinks imageLinks;
-
-        @JsonProperty("industryIdentifiers")
         private List<IndustryIdentifier> industryIdentifiers;
-
-        // [추가된 필드] Google Books 정보 페이지 링크
-        @JsonProperty("infoLink")
-        private String infoLink;
     }
 
     @Getter
@@ -63,7 +44,6 @@ public class BookResponseDto {
     @NoArgsConstructor
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class ImageLinks {
-        @JsonProperty("thumbnail")
         private String thumbnail;
     }
 

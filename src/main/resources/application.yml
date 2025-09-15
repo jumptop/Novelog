@@ -32,7 +32,13 @@ google:
       url: 'https://www.googleapis.com/books/v1/volumes'
       key: ${GOOGLE_BOOKS_API_KEY}
 
-# Gemini API 설정 추가
+# Naver API 설정 추가
+naver:
+  api:
+    client-id: ${NAVER_CLIENT_ID}
+    client-secret: ${NAVER_CLIENT_SECRET}
+
+# Gemini API 설정
 gemini:
   api:
     url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent'

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-// 간단한 스타일 객체
 const detailPageStyles = {
   padding: '40px',
   maxWidth: '900px',
@@ -9,7 +8,7 @@ const detailPageStyles = {
   display: 'flex',
   gap: '40px',
   alignItems: 'flex-start',
-  color: '#213547' // 글자색을 어두운 색으로 명시적으로 지정
+  color: '#213547'
 };
 
 const detailImageStyles = {
@@ -25,7 +24,7 @@ const detailInfoStyles = {
 };
 
 const BookDetailPage = () => {
-  const { id } = useParams();
+  const { isbn } = useParams(); // URL 파라미터를 id에서 isbn으로 변경
   const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -33,7 +32,8 @@ const BookDetailPage = () => {
     const fetchBookDetails = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`http://localhost:8080/api/books/${id}`, {
+        // API 경로를 ISBN으로 조회하도록 수정
+        const response = await fetch(`http://localhost:8080/api/books/${isbn}`, {
           credentials: 'include'
         });
         if (response.ok) {
@@ -50,10 +50,10 @@ const BookDetailPage = () => {
       }
     };
 
-    if (id) {
+    if (isbn) {
       fetchBookDetails();
     }
-  }, [id]);
+  }, [isbn]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -63,21 +63,19 @@ const BookDetailPage = () => {
     return <div>책 정보를 찾을 수 없습니다.</div>;
   }
 
-  const { volumeInfo } = book;
-
+  // Naver API 데이터 구조에 맞게 렌더링 로직 수정
   return (
     <div style={detailPageStyles}>
-      <img src={volumeInfo.imageLinks?.thumbnail} alt={volumeInfo.title} style={detailImageStyles} />
+      <img src={book.image} alt={book.title} style={detailImageImageStyles} />
       <div style={detailInfoStyles}>
-        <h1>{volumeInfo.title}</h1>
-        <h2>{volumeInfo.authors?.join(', ')}</h2>
-        <p><strong>출판사:</strong> {volumeInfo.publisher}</p>
-        <p><strong>출간일:</strong> {volumeInfo.publishedDate}</p>
+        <h1 dangerouslySetInnerHTML={{ __html: book.title }}></h1>
+        <h2>{book.author}</h2>
+        <p><strong>출판사:</strong> {book.publisher}</p>
+        <p><strong>출간일:</strong> {book.pubdate}</p>
         <hr />
-        {/* description이 HTML 태그를 포함할 수 있으므로, dangerouslySetInnerHTML 사용 */}
-        <p dangerouslySetInnerHTML={{ __html: volumeInfo.description }}></p>
-        <a href={volumeInfo.infoLink} target="_blank" rel="noopener noreferrer">
-          Google Books에서 더 보기
+        <p dangerouslySetInnerHTML={{ __html: book.description }}></p>
+        <a href={book.link} target="_blank" rel="noopener noreferrer">
+          네이버 도서에서 더 보기
         </a>
       </div>
     </div>

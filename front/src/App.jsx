@@ -17,8 +17,8 @@ function App() {
           <Route path="/main" element={<MainPage />} />
           <Route path="/survey" element={<SurveyPage />} />
           <Route path="/recommendations" element={<RecommendationPage />} />
-          {/* 상세 페이지 주소를 Google Books ID 기반으로 변경 */}
-          <Route path="/book/:id" element={<BookDetailPage />} />
+          {/* 상세 페이지 주소를 다시 ISBN 기반으로 변경 */}
+          <Route path="/book/:isbn" element={<BookDetailPage />} />
         </Routes>
       </div>
     </Router>

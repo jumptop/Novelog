@@ -10,19 +10,16 @@ const rankInfo = {
 
 const BookPodiumCard = ({ book, rank }) => {
   if (!book) return null;
-
-  const { id, volumeInfo } = book;
-
   return (
-    <Link to={`/book/${id}`} className={`podium-card ${rank}`}>
+    <a href={book.link} target="_blank" rel="noopener noreferrer" className={`podium-card ${rank}`}>
       <div className="podium-rank-indicator">{rankInfo[rank].emoji}</div>
-      <img src={volumeInfo.imageLinks?.thumbnail} alt={volumeInfo.title} className="podium-book-image" />
+      <img src={book.image} alt={book.title} className="podium-book-image" />
       <div className="podium-book-info">
-        <h3 className="podium-book-title">{volumeInfo.title}</h3>
-        <p className="podium-book-author">{volumeInfo.authors?.join(', ')}</p>
-        <p className="podium-book-publisher">{volumeInfo.publisher}</p>
+        <h3 className="podium-book-title" dangerouslySetInnerHTML={{ __html: book.title }}></h3>
+        <p className="podium-book-author">{book.author}</p>
+        <p className="podium-book-publisher">{book.publisher}</p>
       </div>
-    </Link>
+    </a>
   );
 };
 
@@ -52,9 +49,11 @@ const RecommendationPage = () => {
     fetchRecommendations();
   }, []);
 
+  // 추천 목록을 상위 3개와 나머지로 분리합니다.
   const goldMedalBook = recommendations.length > 0 ? recommendations[0] : null;
   const silverMedalBook = recommendations.length > 1 ? recommendations[1] : null;
   const bronzeMedalBook = recommendations.length > 2 ? recommendations[2] : null;
+  const otherRecommendations = recommendations.length > 3 ? recommendations.slice(3) : [];
 
   return (
     <div className="reco-page-container">
@@ -73,11 +72,36 @@ const RecommendationPage = () => {
           <p>Gemini가 추천 중...</p>
         </div>
       ) : (
-        <div className="podium-container">
-          <BookPodiumCard book={goldMedalBook} rank="gold" />
-          <BookPodiumCard book={silverMedalBook} rank="silver" />
-          <BookPodiumCard book={bronzeMedalBook} rank="bronze" />
-        </div>
+        <>
+          {/* 1~3위 시상대 UI */}
+          <div className="podium-container">
+            <BookPodiumCard book={goldMedalBook} rank="gold" />
+            <BookPodiumCard book={silverMedalBook} rank="silver" />
+            <BookPodiumCard book={bronzeMedalBook} rank="bronze" />
+          </div>
+
+          {/* [새로 추가된 부분] 4위 이하 목록 UI */}
+          {otherRecommendations.length > 0 && (
+            <div className="other-reco-section">
+              <h2>추가 추천 목록</h2>
+              <div className="book-list">
+                {otherRecommendations.map((book) => (
+                  <a key={book.isbn} href={book.link} target="_blank" rel="noopener noreferrer" className="book-item">
+                    <img src={book.image} alt={book.title} className="book-image" />
+                    <div className="book-info">
+                      <h3 className="book-title" dangerouslySetInnerHTML={{ __html: book.title }}></h3>
+                      <p className="book-author"><strong>저자:</strong> {book.author}</p>
+                      <p className="book-publisher"><strong>출판사:</strong> {book.publisher}</p>
+                      {book.description && (
+                        <p className="book-description" dangerouslySetInnerHTML={{ __html: book.description }}></p>
+                      )}
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

@@ -1,12 +1,12 @@
 package me.jumptop.novelog.service;
 
-import me.jumptop.novelog.dto.BookResponseDto;
+import me.jumptop.novelog.dto.GoogleBookDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
-public class BookApiService {
+public class GoogleBookApiService {
 
     private final WebClient webClient;
 
@@ -16,11 +16,13 @@ public class BookApiService {
     @Value("${google.books.api.key}")
     private String apiKey;
 
-    public BookApiService(WebClient.Builder webClientBuilder) {
+    // 생성자 이름을 클래스 이름과 일치시킵니다.
+    public GoogleBookApiService(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder.build();
     }
 
-    public BookResponseDto searchBooks(String query) {
+    // 반환 타입을 GoogleBookDto로 변경합니다.
+    public GoogleBookDto searchBooks(String query) {
         return webClient.get()
                 .uri(apiUrl, uriBuilder -> uriBuilder
                         .queryParam("q", query)
@@ -28,7 +30,7 @@ public class BookApiService {
                         .queryParam("maxResults", 20)
                         .build())
                 .retrieve()
-                .bodyToMono(BookResponseDto.class)
+                .bodyToMono(GoogleBookDto.class) // DTO 클래스를 GoogleBookDto로 변경
                 .block();
     }
 
@@ -37,15 +39,15 @@ public class BookApiService {
      * @param id 책의 고유 볼륨 ID
      * @return 책 한 권의 상세 정보
      */
-    public BookResponseDto.BookItem getBookById(String id) {
+    // 반환 타입을 GoogleBookDto.BookItem으로 변경합니다.
+    public GoogleBookDto.BookItem getBookById(String id) {
         String detailApiUrl = apiUrl + "/" + id;
-        // uri 생성 방식을 안정적인 방식으로 수정
         return webClient.get()
                 .uri(detailApiUrl, uriBuilder -> uriBuilder
                         .queryParam("key", apiKey)
                         .build())
                 .retrieve()
-                .bodyToMono(BookResponseDto.BookItem.class)
+                .bodyToMono(GoogleBookDto.BookItem.class) // DTO 클래스를 GoogleBookDto.BookItem으로 변경
                 .block();
     }
 }
