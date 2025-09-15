@@ -3,7 +3,6 @@ package me.jumptop.novelog.service;
 import lombok.RequiredArgsConstructor;
 import me.jumptop.novelog.domain.SurveyAnswer;
 import me.jumptop.novelog.domain.User;
-import me.jumptop.novelog.dto.GoogleBookDto;
 import me.jumptop.novelog.dto.NaverBookDto;
 import me.jumptop.novelog.repository.SurveyAnswerRepository;
 import me.jumptop.novelog.repository.UserRepository;
@@ -22,7 +21,6 @@ public class RecommendationService {
     private final UserRepository userRepository;
     private final SurveyAnswerRepository surveyAnswerRepository;
     private final GeminiService geminiService;
-    private final GoogleBookApiService googleBookApiService;
     private final NaverBookApiService naverBookApiService;
 
     public List<NaverBookDto.Item> getRecommendationsForUser(String email) {
@@ -42,11 +40,11 @@ public class RecommendationService {
         String favoriteBook = answersByCategory.getOrDefault("FAVORITE_BOOK", Collections.emptyList()).stream().findFirst().orElse("없음");
 
         String prompt = String.format(
-                "사용자가 선호하는 소설 장르는 [%s] 이고, 최근 감명 깊게 읽은 책은 '%s' 입니다. " +
-                "이 정보를 바탕으로 사용자가 좋아할 만한 '소설' 50권의 제목을 추천해주세요. " +
-                "매우 중요: 반드시 일반 문학 소설이어야 하며, '라이트 노벨(Light Novel)', '웹소설', '만화(Comics)', bl, 페미니스트는 반드시 제외해주세요. " +
-                "책 제목은 '한글'로, 쉼표(,)로만 구분해서 알려주세요.",
-                preferredGenres, favoriteBook
+            "사용자가 선호하는 소설 장르는 [%s] 이고, 최근 감명 깊게 읽은 책은 '%s' 입니다. " +
+            "이 정보를 바탕으로 사용자가 좋아할 만한 '한국 소설' 10권의 제목을 추천해주세요. " +
+            "매우 중요: 반드시 일반 문학 소설이어야 하며, '라이트 노벨(Light Novel)', '웹소설', '만화(Comics)'는 반드시 제외해주세요. " +
+            "책 제목은 '한글'로, 쉼표(,)로만 구분해서 알려주세요.",
+            preferredGenres, favoriteBook
         );
 
         String geminiResponse = geminiService.generateContent(prompt);
@@ -54,30 +52,12 @@ public class RecommendationService {
 
         List<NaverBookDto.Item> finalRecommendations = new ArrayList<>();
 
+        // [수정된 로직] Google API 검증을 제거하고, Naver API 검색 결과가 있으면 모두 추가합니다.
         for (String title : recommendedTitles) {
-            if (finalRecommendations.size() >= 3) {
-                break;
-            }
-
             try {
-                GoogleBookDto googleResult = googleBookApiService.searchBooks(title.trim());
-                if (googleResult != null && googleResult.getItems() != null && !googleResult.getItems().isEmpty()) {
-                    GoogleBookDto.BookItem googleBookItem = googleResult.getItems().get(0);
-
-                    boolean isFiction = false;
-                    boolean isExcluded = false;
-                    if (googleBookItem.getVolumeInfo() != null && googleBookItem.getVolumeInfo().getCategories() != null) {
-                        List<String> categories = googleBookItem.getVolumeInfo().getCategories();
-                        isFiction = categories.stream().anyMatch(c -> c.contains("Fiction"));
-                        isExcluded = categories.stream().anyMatch(c -> c.contains("Light Novel") || c.contains("Comics"));
-                    }
-
-                    if (isFiction && !isExcluded) {
-                        NaverBookDto naverResult = naverBookApiService.searchBooks(title.trim());
-                        if (naverResult != null && naverResult.getItems() != null && !naverResult.getItems().isEmpty()) {
-                            finalRecommendations.add(naverResult.getItems().get(0));
-                        }
-                    }
+                NaverBookDto naverResult = naverBookApiService.searchBooks(title.trim());
+                if (naverResult != null && naverResult.getItems() != null && !naverResult.getItems().isEmpty()) {
+                    finalRecommendations.add(naverResult.getItems().get(0));
                 }
             } catch (Exception e) {
                 System.err.println("Error processing recommendation for title: " + title + " - " + e.getMessage());
