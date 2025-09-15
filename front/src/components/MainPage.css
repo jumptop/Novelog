@@ -247,6 +247,34 @@ a.book-link:hover {
   background: #dd6b20;
 }
 
+/* 헤더 중앙의 추천받기 버튼 스타일 */
+.reco-btn-header {
+  /* a 태그의 기본 스타일 초기화 */
+  text-decoration: none;
+  
+  /* 버튼처럼 보이도록 */
+  padding: 8px 20px;
+  border-radius: 20px;
+  background-color: #f7fafc;
+  border: 1px solid #e2e8f0;
+  
+  /* 로고와 비슷한 느낌의 폰트 스타일 */
+  font-size: 1rem;
+  font-weight: 600;
+  color: #4a5568;
+  
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.reco-btn-header:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  color: #667eea;
+  border-color: #667eea;
+}
+
+
 /* 반응형 디자인 */
 @media (max-width: 768px) {
   .header-content {

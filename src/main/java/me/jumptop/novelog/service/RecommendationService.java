@@ -20,16 +20,15 @@ public class RecommendationService {
     private final UserRepository userRepository;
     private final SurveyAnswerRepository surveyAnswerRepository;
     private final GeminiService geminiService;
-    private final BookApiService bookApiService; // BookApiService 주입 추가
+    private final BookApiService bookApiService;
 
-    // 반환 타입을 List<String>에서 List<BookResponseDto.BookItem>으로 변경
     public List<BookResponseDto.BookItem> getRecommendationsForUser(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다. email=" + email));
 
         List<SurveyAnswer> answers = surveyAnswerRepository.findByUser(user);
         if (answers.isEmpty()) {
-            return Collections.emptyList(); // 설문 답변이 없으면 빈 리스트 반환
+            return Collections.emptyList();
         }
         
         String preferredGenres = answers.stream()
@@ -38,17 +37,15 @@ public class RecommendationService {
 
         String prompt = String.format(
             "A user likes the following book genres: [%s]. " +
-            "Based on these preferences, recommend 5 novel titles. " +
-            "Please provide only the titles, separated by commas. " +
-            "For example: Title 1,Title 2,Title 3,Title 4,Title 5",
+            "Based on these preferences, recommend exactly 3 Korean novel titles. " +
+            "Please provide only the titles, separated by commas, without any other introductory text or numbering. " +
+            "For example: Title 1,Title 2,Title 3",
             preferredGenres
         );
 
         String geminiResponse = geminiService.generateContent(prompt);
         List<String> recommendedTitles = List.of(geminiResponse.split(","));
 
-        // [추가된 핵심 로직]
-        // 각 제목으로 네이버 API를 검색하여 상세 정보를 가져옵니다.
         return recommendedTitles.stream()
                 .map(title -> {
                     try {

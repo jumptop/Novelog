@@ -8,8 +8,7 @@ const MainPage = () => {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
 
-  const [recommendations, setRecommendations] = useState([]);
-  const [recoLoading, setRecoLoading] = useState(false);
+  // 추천 관련 로직은 모두 RecommendationPage.jsx로 이동했으므로 삭제합니다.
 
   useEffect(() => {
     checkUserStatus();
@@ -94,29 +93,6 @@ const MainPage = () => {
       });
   };
 
-  const handleGetRecommendations = async () => {
-    setRecoLoading(true);
-    setRecommendations([]);
-
-    try {
-      const response = await fetch('http://localhost:8080/api/recommendations', {
-        credentials: 'include',
-      });
-
-      if (response.ok) {
-        const recoBooks = await response.json();
-        setRecommendations(recoBooks);
-      } else {
-        alert('추천 목록을 가져오는 데 실패했습니다.');
-      }
-    } catch (error) {
-      console.error("추천 API 호출 중 오류:", error);
-      alert('추천 목록을 가져오는 중 오류가 발생했습니다.');
-    } finally {
-      setRecoLoading(false);
-    }
-  };
-
   const handleReset = () => {
     setQuery('');
     setBooks([]);
@@ -137,6 +113,11 @@ const MainPage = () => {
       <header className="main-header">
         <div className="header-content">
           <Link to="/main" className="logo" onClick={handleReset}>Novelog</Link>
+          
+          <Link to="/recommendations" className="reco-btn-header">
+            내 취향의 책 추천받기
+          </Link>
+
           <div className="user-section">
             <div className="user-info">
               <img src={user.picture} alt="프로필" className="user-avatar" />
@@ -153,48 +134,7 @@ const MainPage = () => {
       </header>
 
       <main className="main-content">
-        <div className="recommendation-section">
-          <h2>Gemini 추천 도서</h2>
-          <p>설문조사 결과를 바탕으로 Gemini가 추천하는 책 목록입니다.</p>
-          <button onClick={handleGetRecommendations} className="reco-btn" disabled={recoLoading}>
-            {recoLoading ? '추천받는 중...' : '내 취향에 맞는 책 추천받기'}
-          </button>
-          
-          {recoLoading && (
-            <div className="loading-container">
-              <div className="loading-spinner"></div>
-              <p>Gemini가 추천 중...</p>
-            </div>
-          )}
-
-          {/* 추천 결과를 책 검색 결과와 동일한 UI로 표시 */}
-          <div className="book-list">
-            {recommendations.map((book, index) => (
-              <div key={`reco-${index}`} className="book-item">
-                <img src={book.image} alt={book.title} className="book-image" />
-                <div className="book-info">
-                  <h3 className="book-title" dangerouslySetInnerHTML={{ __html: book.title }}></h3>
-                  <p className="book-author"><strong>저자:</strong> {book.author}</p>
-                  <p className="book-publisher"><strong>출판사:</strong> {book.publisher}</p>
-                  {book.description && (
-                    <p className="book-description">{book.description}</p>
-                  )}
-                  {book.link && (
-                    <a 
-                      href={book.link} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="book-link"
-                    >
-                      네이버 도서 정보 보기
-                    </a>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
+        {/* 추천 관련 UI는 모두 제거하고 검색 기능만 남깁니다. */}
         <div className="search-section">
           <h2>책 검색</h2>
           <div className="search-container">
