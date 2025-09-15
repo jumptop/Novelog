@@ -2,11 +2,76 @@ import React, { useEffect, useState } from 'react';
 import './MainPage.css';
 import { Link } from 'react-router-dom';
 
-const MainPage = () => {
+// 검색 모달 컴포넌트
+const SearchModal = ({ onClose }) => {
   const [query, setQuery] = useState('');
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const handleSearch = () => {
+    if (!query) {
+      alert('검색어를 입력해주세요.');
+      return;
+    }
+    setLoading(true);
+    setBooks([]);
+
+    fetch(`http://localhost:8080/api/search/books?query=${query}`)
+      .then(response => response.json())
+      .then(data => {
+        setBooks(data.items || []);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error("API 호출 중 오류 발생:", error);
+        alert('책 정보를 가져오는 데 실패했습니다.');
+        setLoading(false);
+      });
+  };
+
+  return (
+    <div className="search-modal-overlay" onClick={onClose}>
+      <div className="search-modal-content" onClick={(e) => e.stopPropagation()}>
+        <button className="close-btn" onClick={onClose}>&times;</button>
+        <h2>책 검색</h2>
+        <div className="search-container">
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="검색어를 입력하세요"
+            onKeyUp={(e) => { if (e.key === 'Enter') handleSearch(); }}
+            className="search-input"
+            autoFocus
+          />
+          <button onClick={handleSearch} className="search-btn">검색</button>
+        </div>
+        {loading && (
+          <div className="loading-container">
+            <div className="loading-spinner"></div>
+          </div>
+        )}
+        <div className="book-list modal-book-list">
+          {books.map((book) => (
+            <a key={book.isbn} href={book.link} target="_blank" rel="noopener noreferrer" className="book-item">
+              <img src={book.image} alt={book.title} className="book-image" />
+              <div className="book-info">
+                <h3 className="book-title" dangerouslySetInnerHTML={{ __html: book.title }}></h3>
+                <p className="book-author"><strong>저자:</strong> {book.author}</p>
+                <p className="book-publisher"><strong>출판사:</strong> {book.publisher}</p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// 메인 페이지 컴포넌트
+const MainPage = () => {
   const [user, setUser] = useState(null);
+  const [isSearchOpen, setIsSearchOpen] = useState(false); // 검색 모달 상태
 
   useEffect(() => {
     checkUserStatus();
@@ -70,30 +135,7 @@ const MainPage = () => {
     }
   };
 
-  const handleSearch = () => {
-    if (!query) {
-      alert('검색어를 입력해주세요.');
-      return;
-    }
-    setLoading(true);
-    setBooks([]);
-
-    fetch(`http://localhost:8080/api/search/books?query=${query}`)
-      .then(response => response.json())
-      .then(data => {
-        setBooks(data.items || []);
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error("API 호출 중 오류 발생:", error);
-        alert('책 정보를 가져오는 데 실패했습니다.');
-        setLoading(false);
-      });
-  };
-
   const handleReset = () => {
-    setQuery('');
-    setBooks([]);
     window.scrollTo(0, 0);
   }
 
@@ -112,77 +154,32 @@ const MainPage = () => {
         <div className="header-content">
           <Link to="/main" className="logo" onClick={handleReset}>Novelog</Link>
           
-          <Link to="/recommendations" className="reco-btn-header">
-            내 취향의 책 추천받기
-          </Link>
-
-          <div className="user-section">
-            <div className="user-info">
+          <div className="header-actions">
+            {/* 검색 아이콘 버튼 */}
+            <button className="action-btn" onClick={() => setIsSearchOpen(true)} title="검색">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </button>
+            <div className="user-section">
               <img src={user.picture} alt="프로필" className="user-avatar" />
-              <span className="user-name">{user.name}</span>
+              <button className="reset-btn" onClick={handleResetSurvey}>설문 초기화</button>
+              <button className="logout-btn" onClick={handleLogout}>로그아웃</button>
             </div>
-            <button className="reset-btn" onClick={handleResetSurvey}>
-              설문 초기화
-            </button>
-            <button className="logout-btn" onClick={handleLogout}>
-              로그아웃
-            </button>
           </div>
         </div>
       </header>
 
-      <main className="main-content">
-        <div className="search-section">
-          <h2>책 검색</h2>
-          <div className="search-container">
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="검색어를 입력하세요"
-              onKeyUp={(e) => { if (e.key === 'Enter') handleSearch(); }}
-              className="search-input"
-            />
-            <button onClick={handleSearch} className="search-btn">
-              검색
-            </button>
-          </div>
-        </div>
-
-        {loading && (
-          <div className="loading-container">
-            <div className="loading-spinner"></div>
-            <p>검색 중...</p>
-          </div>
-        )}
-
-        {/* 검색 결과 렌더링 로직을 Naver API 구조에 맞게 수정 */}
-        <div className="book-list">
-          {books.map((book) => (
-            <div key={book.isbn} className="book-item">
-              <img src={book.image} alt={book.title} className="book-image" />
-              <div className="book-info">
-                <h3 className="book-title" dangerouslySetInnerHTML={{ __html: book.title }}></h3>
-                <p className="book-author"><strong>저자:</strong> {book.author}</p>
-                <p className="book-publisher"><strong>출판사:</strong> {book.publisher}</p>
-                {book.description && (
-                  <p className="book-description" dangerouslySetInnerHTML={{ __html: book.description }}></p>
-                )}
-                {book.link && (
-                  <a 
-                    href={book.link} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="book-link"
-                  >
-                    네이버 도서에서 보기
-                  </a>
-                )}
-              </div>
-            </div>
-          ))}
+      <main className="main-content centered-content">
+        <div className="main-cta-container">
+          <h1>당신만을 위한 소설 추천</h1>
+          <p>간단한 취향 설문을 통해, Gemini가 새로운 인생 책을 찾아드립니다.</p>
+          <Link to="/recommendations" className="main-reco-button">
+            내 취향의 책 추천받기
+          </Link>
         </div>
       </main>
+
+      {/* 검색 모달 */}
+      {isSearchOpen && <SearchModal onClose={() => setIsSearchOpen(false)} />}
     </div>
   );
 };

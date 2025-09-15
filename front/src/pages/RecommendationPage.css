@@ -130,11 +130,10 @@
   z-index: 5;
 }
 
-/* 스크롤 유도 화살표 스타일 */
 .scroll-down-indicator {
   text-align: center;
-  margin-top: 40px; /* 시상대와의 간격 */
-  margin-bottom: 40px; /* 구분선과의 간격 */
+  margin-top: 40px;
+  margin-bottom: 40px;
   animation: bounce 2s infinite;
 }
 
@@ -153,7 +152,7 @@
 .reco-divider {
   border: none;
   border-top: 1px solid #e2e8f0;
-  margin: 0 0 40px 0; /* 화살표와의 간격 조정 */
+  margin: 40px 0 40px 0;
 }
 
 .other-reco-section h2 {
@@ -192,4 +191,29 @@
 
 .back-to-main-btn:hover {
   color: #667eea;
+}
+
+.main-reco-button {
+  background: #667eea;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.main-reco-button:hover {
+  background: #5a67d8;
+}
+
+.centered-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 80px 24px;
 }
