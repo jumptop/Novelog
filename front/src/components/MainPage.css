@@ -313,4 +313,5 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   height: 2.7em; /* 폰트 크기 * 라인 높이 * 2 */
+  color: black;
 }

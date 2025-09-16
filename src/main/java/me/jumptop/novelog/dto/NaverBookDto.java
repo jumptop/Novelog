@@ -32,5 +32,6 @@ public class NaverBookDto {
         private String pubdate;
         private String isbn;
         private String description;
+        private String category;
     }
 }

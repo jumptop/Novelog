@@ -188,7 +188,7 @@ const MainPage = () => {
         <div className="centered-content">
           <div className="main-cta-container">
             <h1>당신만을 위한 소설 추천</h1>
-            <p>간단한 취향 설문을 통해, Gemini가 새로운 인생 책을 찾아드립니다.</p>
+            <p>간단한 취향 설문을 통해, AI가 새로운 인생 책을 찾아드립니다.</p>
             <Link to="/recommendations" className="main-reco-button">
               내 취향의 책 추천받기
             </Link>
@@ -197,7 +197,7 @@ const MainPage = () => {
 
         {/* 신간 도서 섹션 */}
         <div className="new-releases-section">
-          <h2 className="new-releases-title">새로 나온 소설</h2>
+          <h2 className="new-releases-title">문학 그 너머로</h2>
           <div className="new-releases-grid">
             {newReleases.map(book => (
               <a key={book.isbn} href={book.link} target="_blank" rel="noopener noreferrer" className="new-releases-book-item">

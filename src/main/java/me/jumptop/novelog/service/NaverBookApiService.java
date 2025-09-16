@@ -5,6 +5,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class NaverBookApiService {
 
@@ -38,7 +42,7 @@ public class NaverBookApiService {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/v1/search/book.json")
-                        .queryParam("query", "소설")
+                        .queryParam("query", "인문") // "소설" -> "인문"
                         .queryParam("sort", "date")
                         .queryParam("display", 20)
                         .build())
