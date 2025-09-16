@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import me.jumptop.novelog.domain.SurveyAnswer;
 import me.jumptop.novelog.domain.User;
 import me.jumptop.novelog.dto.NaverBookDto;
+import me.jumptop.novelog.dto.SurveyAnswerDto;
 import me.jumptop.novelog.dto.SurveyRequestDto;
 import me.jumptop.novelog.repository.SurveyAnswerRepository;
 import me.jumptop.novelog.repository.UserRepository;
@@ -15,6 +16,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.http.HttpHeaders;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -55,6 +57,16 @@ public class SurveyService {
         userRepository.save(user);
 
         return user;
+    }
+
+    @Transactional(readOnly = true)
+    public List<SurveyAnswerDto> getAnswersByUser(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다. email=" + email));
+
+        return surveyAnswerRepository.findByUser(user).stream()
+                .map(SurveyAnswerDto::new)
+                .collect(Collectors.toList());
     }
 
     @Transactional

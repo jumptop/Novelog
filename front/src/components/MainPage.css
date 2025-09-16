@@ -72,7 +72,7 @@
   color: #2d3748;
 }
 
-.logout-btn, .reset-btn {
+.logout-btn, .info-btn {
   border: none;
   padding: 8px 16px;
   border-radius: 6px;
@@ -80,12 +80,15 @@
   cursor: pointer;
   transition: background-color 0.3s ease;
   color: white;
+  text-decoration: none; /* Link 컴포넌트의 밑줄 제거 */
+  display: inline-flex;
+  align-items: center;
 }
 
 .logout-btn { background: #e53e3e; }
 .logout-btn:hover { background: #c53030; }
-.reset-btn { background: #f6ad55; }
-.reset-btn:hover { background: #dd6b20; }
+.info-btn { background: #4a5568; }
+.info-btn:hover { background: #2d3748; }
 
 /* 메인 컨텐츠를 중앙 정렬하기 위한 스타일 */
 .centered-content {

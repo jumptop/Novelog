@@ -5,6 +5,7 @@ import MainPage from './components/MainPage';
 import SurveyPage from './pages/SurveyPage';
 import RecommendationPage from './pages/RecommendationPage';
 import BookDetailPage from './pages/BookDetailPage';
+import ProfilePage from './pages/ProfilePage'; // ProfilePage 임포트
 import './App.css';
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
           <Route path="/main" element={<MainPage />} />
           <Route path="/survey" element={<SurveyPage />} />
           <Route path="/recommendations" element={<RecommendationPage />} />
+          <Route path="/profile" element={<ProfilePage />} /> {/* ProfilePage 라우트 추가 */}
           {/* 상세 페이지 주소를 다시 ISBN 기반으로 변경 */}
           <Route path="/book/:isbn" element={<BookDetailPage />} />
         </Routes>

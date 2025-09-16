@@ -1,87 +1,118 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import './ProfilePage.css';
 
 const ProfilePage = () => {
-  const [user, setUser] = useState(null);
-  const [surveyAnswers, setSurveyAnswers] = useState([]);
-  const [loading, setLoading] = useState(true);
+    const [user, setUser] = useState(null);
+    const [answers, setAnswers] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchProfileData = async () => {
-      try {
-        // 1. 기본 사용자 정보 가져오기
-        const userResponse = await fetch('http://localhost:8080/api/user/me', { credentials: 'include' });
-        if (userResponse.ok) {
-          const userData = await userResponse.json();
-          setUser(userData);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                // 유저 정보와 설문 답변 정보를 동시에 요청
+                const [userResponse, answersResponse] = await Promise.all([
+                    fetch('http://localhost:8080/api/user/me', { credentials: 'include' }),
+                    fetch('http://localhost:8080/api/user/answers', { credentials: 'include' })
+                ]);
 
-          // 2. 설문 답변 가져오기
-          const answersResponse = await fetch('http://localhost:8080/api/user/survey-answers', { credentials: 'include' });
-          if (answersResponse.ok) {
-            const answersData = await answersResponse.json();
-            setSurveyAnswers(answersData);
-          } else {
-            console.error('설문 답변을 가져오는 데 실패했습니다.');
-          }
-        } else {
-          console.error('사용자 기본 정보를 가져오는 데 실패했습니다.');
-          // 로그인되지 않은 경우 로그인 페이지로 리다이렉트
-          window.location.href = '/login';
+                if (!userResponse.ok || !answersResponse.ok) {
+                    // 둘 중 하나라도 실패하면 로그인 페이지로 이동
+                    navigate('/login');
+                    return;
+                }
+
+                const userData = await userResponse.json();
+                const answersData = await answersResponse.json();
+
+                setUser(userData);
+                setAnswers(answersData);
+            } catch (error) {
+                console.error('데이터를 가져오는 중 오류 발생:', error);
+                navigate('/login');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, [navigate]);
+
+    const handleResetSurvey = async () => {
+        if (!confirm('정말로 설문을 초기화하시겠습니까? 모든 추천 기록이 사라지며, 다시 로그인해야 합니다.')) {
+            return;
         }
-      } catch (error) {
-        console.error('프로필 데이터 로드 중 오류:', error);
-      } finally {
-        setLoading(false);
-      }
+        try {
+            const response = await fetch('http://localhost:8080/api/user/me/reset-survey', {
+                method: 'POST',
+                credentials: 'include',
+            });
+
+            if (response.ok) {
+                alert('설문이 초기화되었습니다. 다시 로그인해주세요.');
+                // 로그아웃 처리
+                await fetch('http://localhost:8080/logout', {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+                navigate('/login');
+            } else {
+                const errorText = await response.text();
+                alert(`초기화에 실패했습니다: ${errorText}`);
+            }
+        } catch (error) {
+            console.error('설문 초기화 중 오류:', error);
+            alert('서버와 통신 중 오류가 발생했습니다.');
+        }
     };
 
-    fetchProfileData();
-  }, []);
+    if (loading) {
+        return <div className="profile-loading">데이터를 불러오는 중...</div>;
+    }
 
-  if (loading) {
-    return <div>Loading profile...</div>;
-  }
+    const preferredGenres = answers.filter(a => a.category === 'GENRE').map(a => a.content);
+    const favoriteBook = answers.find(a => a.category === 'FAVORITE_BOOK');
 
-  if (!user) {
-    return <div>사용자 정보를 불러올 수 없습니다.</div>;
-  }
+    return (
+        <div className="profile-page-container">
+            <div className="profile-card">
+                <header className="profile-header">
+                    <img src={user?.picture} alt="프로필 이미지" className="profile-picture" />
+                    <h1 className="profile-name">{user?.name}</h1>
+                    <p className="profile-email">{user?.email}</p>
+                </header>
 
-  // 장르와 인생 책을 구분하여 표시
-  const genres = surveyAnswers.filter(a => a.category === 'GENRE').map(a => a.content);
-  const favoriteBook = surveyAnswers.find(a => a.category === 'FAVORITE_BOOK')?.content;
+                <main className="profile-content">
+                    <section className="profile-section">
+                        <h2 className="section-title">나의 선호 장르</h2>
+                        <div className="genres-container">
+                            {preferredGenres.length > 0 ? (
+                                preferredGenres.map((genre, index) => (
+                                    <span key={index} className="genre-tag">#{genre}</span>
+                                ))
+                            ) : (
+                                <p>선택한 장르가 없습니다.</p>
+                            )}
+                        </div>
+                    </section>
 
-  return (
-    <div className="profile-container">
-      <div className="profile-header">
-        <img src={user.picture} alt={user.name} className="profile-avatar" />
-        <h1>{user.name}님의 프로필</h1>
-        <p className="profile-email">{user.email}</p>
-      </div>
+                    <section className="profile-section">
+                        <h2 className="section-title">나의 인생 책</h2>
+                        <p className="favorite-book">
+                            {favoriteBook ? favoriteBook.content : '입력한 책이 없습니다.'}
+                        </p>
+                    </section>
+                </main>
 
-      <div className="profile-details">
-        <h2>나의 취향</h2>
-        <div className="profile-section">
-          <h3>선호 장르</h3>
-          {genres.length > 0 ? (
-            <p>{genres.join(', ')}</p>
-          ) : (
-            <p>선택된 장르가 없습니다.</p>
-          )}
+                <footer className="profile-footer">
+                    <button onClick={handleResetSurvey} className="reset-survey-btn">
+                        설문 다시하기
+                    </button>
+                </footer>
+            </div>
         </div>
-
-        <div className="profile-section">
-          <h3>최근 감명 깊게 읽은 책</h3>
-          <p>{favoriteBook || '아직 입력된 책이 없습니다.'}</p>
-        </div>
-      </div>
-
-      <div className="profile-actions">
-        <Link to="/survey" className="change-prefs-btn">
-          취향 바꾸기 (설문 다시하기)
-        </Link>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default ProfilePage;
