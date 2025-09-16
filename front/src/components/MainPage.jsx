@@ -72,10 +72,26 @@ const SearchModal = ({ onClose }) => {
 const MainPage = () => {
   const [user, setUser] = useState(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false); // 검색 모달 상태
+  const [newReleases, setNewReleases] = useState([]); // 신간 도서 상태 추가
 
   useEffect(() => {
     checkUserStatus();
+    fetchNewReleases(); // 신간 도서 데이터 호출
   }, []);
+
+  const fetchNewReleases = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/api/books/new-releases');
+      if (response.ok) {
+        const data = await response.json();
+        setNewReleases(data.items || []);
+      } else {
+        console.error('신간 도서 정보 조회 실패:', response.status);
+      }
+    } catch (error) {
+      console.error('신간 도서 정보 확인 중 오류:', error);
+    }
+  };
 
   const checkUserStatus = async () => {
     try {
@@ -168,13 +184,30 @@ const MainPage = () => {
         </div>
       </header>
 
-      <main className="main-content centered-content">
-        <div className="main-cta-container">
-          <h1>당신만을 위한 소설 추천</h1>
-          <p>간단한 취향 설문을 통해, Gemini가 새로운 인생 책을 찾아드립니다.</p>
-          <Link to="/recommendations" className="main-reco-button">
-            내 취향의 책 추천받기
-          </Link>
+      <main className="main-content">
+        <div className="centered-content">
+          <div className="main-cta-container">
+            <h1>당신만을 위한 소설 추천</h1>
+            <p>간단한 취향 설문을 통해, Gemini가 새로운 인생 책을 찾아드립니다.</p>
+            <Link to="/recommendations" className="main-reco-button">
+              내 취향의 책 추천받기
+            </Link>
+          </div>
+        </div>
+
+        {/* 신간 도서 섹션 */}
+        <div className="new-releases-section">
+          <h2 className="new-releases-title">새로 나온 소설</h2>
+          <div className="new-releases-grid">
+            {newReleases.map(book => (
+              <a key={book.isbn} href={book.link} target="_blank" rel="noopener noreferrer" className="new-releases-book-item">
+                <img src={book.image} alt={book.title} className="new-releases-book-image" />
+                <div className="new-releases-book-info">
+                  <h3 className="new-releases-book-title" dangerouslySetInnerHTML={{ __html: book.title }}></h3>
+                </div>
+              </a>
+            ))}
+          </div>
         </div>
       </main>
 

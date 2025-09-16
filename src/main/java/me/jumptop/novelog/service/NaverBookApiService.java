@@ -33,4 +33,19 @@ public class NaverBookApiService {
                 .bodyToMono(NaverBookDto.class)
                 .block();
     }
+
+    public NaverBookDto getNewReleases() {
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/v1/search/book.json")
+                        .queryParam("query", "소설")
+                        .queryParam("sort", "date")
+                        .queryParam("display", 20)
+                        .build())
+                .header("X-Naver-Client-Id", clientId)
+                .header("X-Naver-Client-Secret", clientSecret)
+                .retrieve()
+                .bodyToMono(NaverBookDto.class)
+                .block();
+    }
 }

@@ -31,4 +31,9 @@ public class BookController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/api/books/new-releases")
+    public NaverBookDto getNewReleases() {
+        return naverBookApiService.getNewReleases();
+    }
 }

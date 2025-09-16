@@ -251,3 +251,66 @@
   color: #718096;
   margin: 0;
 }
+
+/* 신간 도서 섹션 스타일 */
+.new-releases-section {
+  width: 100%;
+  max-width: 1200px; /* 최대 너비 설정 */
+  margin: 60px auto 0 auto; /* 위쪽 여백 및 중앙 정렬 */
+  padding: 0 24px; /* 좌우 여백 */
+}
+
+.new-releases-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2d3748;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.new-releases-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 30px 20px; /* 세로, 가로 갭 */
+}
+
+.new-releases-book-item {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.new-releases-book-item:hover {
+  transform: translateY(-5px);
+}
+
+.new-releases-book-image {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2 / 3; /* 이미지 비율 유지 */
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  margin-bottom: 12px;
+}
+
+.new-releases-book-info {
+  width: 100%;
+}
+
+.new-releases-book-title {
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin: 0;
+  /* 두 줄 이상일 경우 말줄임표 처리 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  height: 2.7em; /* 폰트 크기 * 라인 높이 * 2 */
+}

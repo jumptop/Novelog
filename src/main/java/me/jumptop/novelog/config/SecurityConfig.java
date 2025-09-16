@@ -38,6 +38,7 @@ public class SecurityConfig {
                                 "/login",
                                 "/main",
                                 "/api/search/books",
+                                "/api/books/new-releases",
                                 "/oauth2/**",
                                 "/login/oauth2/**"
                         )

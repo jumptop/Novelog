@@ -3,13 +3,17 @@ package me.jumptop.novelog.service;
 import lombok.RequiredArgsConstructor;
 import me.jumptop.novelog.domain.SurveyAnswer;
 import me.jumptop.novelog.domain.User;
+import me.jumptop.novelog.dto.NaverBookDto;
 import me.jumptop.novelog.dto.SurveyRequestDto;
 import me.jumptop.novelog.repository.SurveyAnswerRepository;
 import me.jumptop.novelog.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.http.HttpHeaders;
 import java.util.List;
 
 @Service
