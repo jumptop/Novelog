@@ -23,6 +23,8 @@ const SurveyPage1_Genres = ({ answers, onAnswerChange }) => {
       <label><input type="checkbox" value="SF" onChange={handleCheckboxChange} checked={answers.genres?.includes('SF')} /> SF</label>
       <label><input type="checkbox" value="미스터리" onChange={handleCheckboxChange} checked={answers.genres?.includes('미스터리')} /> 미스터리/스릴러</label>
       <label><input type="checkbox" value="역사" onChange={handleCheckboxChange} checked={answers.genres?.includes('역사')} /> 시대극/역사</label>
+      <label><input type="checkbox" value="무협" onChange={handleCheckboxChange} checked={answers.genres?.includes('무협')} /> 무협</label>
+      <label><input type="checkbox" value="청소년소설" onChange={handleCheckboxChange} checked={answers.genres?.includes('청소년소설')} /> 청소년소설</label>
     </div>
   );
 };

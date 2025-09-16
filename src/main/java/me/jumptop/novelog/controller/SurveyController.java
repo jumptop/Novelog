@@ -8,6 +8,7 @@ import me.jumptop.novelog.dto.SurveyRequestDto;
 import me.jumptop.novelog.service.SurveyService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,5 +37,18 @@ public class SurveyController {
         session.setAttribute("user", newSessionUser);
 
         return ResponseEntity.ok("설문이 정상적으로 완료되었습니다.");
+    }
+
+    @DeleteMapping("/api/survey/reset")
+    public ResponseEntity<String> resetSurvey(HttpSession session) {
+        SessionUser sessionUser = (SessionUser) session.getAttribute("user");
+
+        if (sessionUser == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+        }
+
+        surveyService.resetSurveyStatus(sessionUser.getEmail());
+
+        return ResponseEntity.ok("설문 내역이 초기화되었습니다.");
     }
 }

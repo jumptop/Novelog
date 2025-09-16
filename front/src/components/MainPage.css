@@ -127,6 +127,7 @@
 .main-reco-button:hover {
   transform: translateY(-4px);
   box-shadow: 0 14px 28px rgba(102, 126, 234, 0.4);
+  color: white;
 }
 
 /* --- 검색 모달 스타일 --- */

@@ -57,6 +57,9 @@ public class SurveyService {
     public void resetSurveyStatus(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다. email=" + email));
+
+        surveyAnswerRepository.deleteAllByUser(user);
+
         user.resetSurvey();
         userRepository.save(user);
     }
