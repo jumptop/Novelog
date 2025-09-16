@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import './ProfilePage.css';
 
 const ProfilePage = () => {
@@ -40,7 +40,7 @@ const ProfilePage = () => {
     }, [navigate]);
 
     const handleResetSurvey = async () => {
-        if (!confirm('정말로 설문을 초기화하시겠습니까? 모든 추천 기록이 사라지며, 다시 로그인해야 합니다.')) {
+        if (!confirm('정말로 설문을 초기화하시겠습니까? 설문조사 페이지로 이동합니다.')) {
             return;
         }
         try {
@@ -50,13 +50,8 @@ const ProfilePage = () => {
             });
 
             if (response.ok) {
-                alert('설문이 초기화되었습니다. 다시 로그인해주세요.');
-                // 로그아웃 처리
-                await fetch('http://localhost:8080/logout', {
-                    method: 'POST',
-                    credentials: 'include'
-                });
-                navigate('/login');
+                alert('설문이 초기화되었습니다. 설문 페이지로 이동합니다.');
+                navigate('/survey'); // 설문 페이지로 바로 이동
             } else {
                 const errorText = await response.text();
                 alert(`초기화에 실패했습니다: ${errorText}`);
@@ -76,6 +71,9 @@ const ProfilePage = () => {
 
     return (
         <div className="profile-page-container">
+            <Link to="/main" className="back-to-main-btn">
+                &larr; 메인으로 돌아가기
+            </Link>
             <div className="profile-card">
                 <header className="profile-header">
                     <img src={user?.picture} alt="프로필 이미지" className="profile-picture" />

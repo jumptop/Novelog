@@ -1,10 +1,24 @@
 .profile-page-container {
     display: flex;
+    flex-direction: column; /* 세로 정렬 */
     justify-content: center;
     align-items: center;
     min-height: 100vh;
     background-color: #f0f2f5;
     padding: 40px 20px;
+}
+
+.back-to-main-btn {
+  display: inline-block;
+  margin-bottom: 24px;
+  font-weight: 600;
+  color: #4a5568;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.back-to-main-btn:hover {
+  color: #667eea;
 }
 
 .profile-card {
