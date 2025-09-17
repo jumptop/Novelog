@@ -5,8 +5,10 @@ import MainPage from './components/MainPage';
 import SurveyPage from './pages/SurveyPage';
 import RecommendationPage from './pages/RecommendationPage';
 import BookDetailPage from './pages/BookDetailPage';
-import ProfilePage from './pages/ProfilePage'; // ProfilePage 임포트
-import JournalPage from './pages/JournalPage'; // JournalPage 임포트
+import ProfilePage from './pages/ProfilePage';
+import JournalPage from './pages/JournalPage';
+import JournalListPage from './pages/JournalListPage';
+import JournalDetailPage from './pages/JournalDetailPage'; // JournalDetailPage 임포트
 import './App.css';
 
 function App() {
@@ -20,8 +22,9 @@ function App() {
           <Route path="/survey" element={<SurveyPage />} />
           <Route path="/recommendations" element={<RecommendationPage />} />
           <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/journal/new" element={<JournalPage />} /> {/* JournalPage 라우트 추가 */}
-          {/* 상세 페이지 주소를 다시 ISBN 기반으로 변경 */}
+          <Route path="/journal/new" element={<JournalPage />} />
+          <Route path="/journals" element={<JournalListPage />} />
+          <Route path="/journal/:id" element={<JournalDetailPage />} /> {/* JournalDetailPage 라우트 추가 */}
           <Route path="/book/:isbn" element={<BookDetailPage />} />
         </Routes>
       </div>

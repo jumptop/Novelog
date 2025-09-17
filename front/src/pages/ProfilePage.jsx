@@ -5,31 +5,27 @@ import './ProfilePage.css';
 const ProfilePage = () => {
     const [user, setUser] = useState(null);
     const [answers, setAnswers] = useState([]);
-    const [journals, setJournals] = useState([]); // 저널 데이터 상태 추가
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [userResponse, answersResponse, journalsResponse] = await Promise.all([
+                const [userResponse, answersResponse] = await Promise.all([
                     fetch('http://localhost:8080/api/user/me', { credentials: 'include' }),
-                    fetch('http://localhost:8080/api/user/answers', { credentials: 'include' }),
-                    fetch('http://localhost:8080/api/journals', { credentials: 'include' }) // 저널 데이터 요청
+                    fetch('http://localhost:8080/api/user/answers', { credentials: 'include' })
                 ]);
 
-                if (!userResponse.ok || !answersResponse.ok || !journalsResponse.ok) {
+                if (!userResponse.ok || !answersResponse.ok) {
                     navigate('/login');
                     return;
                 }
 
                 const userData = await userResponse.json();
                 const answersData = await answersResponse.json();
-                const journalsData = await journalsResponse.json();
 
                 setUser(userData);
                 setAnswers(answersData);
-                setJournals(journalsData);
             } catch (error) {
                 console.error('데이터를 가져오는 중 오류 발생:', error);
                 navigate('/login');
@@ -106,26 +102,11 @@ const ProfilePage = () => {
                 </main>
             </div>
 
-            {/* 나의 독서 기록 섹션 */}
-            <div className="journal-list-container">
-                <h2 className="journal-list-title">나의 독서 기록</h2>
-                {journals.length > 0 ? (
-                    <div className="journal-list">
-                        {journals.map(journal => (
-                            <div key={journal.id} className="journal-entry-card">
-                                <img src={journal.bookImage} alt={journal.bookTitle} className="journal-book-image" />
-                                <div className="journal-entry-content">
-                                    <h3>{journal.bookTitle}</h3>
-                                    <p className="journal-user-notes"><strong>나의 감상평:</strong> {journal.userNotes}</p>
-                                    <p className="journal-ai-text"><strong>AI 기록:</strong> {journal.aiJournal}</p>
-                                    <span className="journal-date">{new Date(journal.createdAt).toLocaleDateString()}</span>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                ) : (
-                    <p className="no-journals-message">아직 작성된 독서 기록이 없습니다.</p>
-                )}
+            {/* 나의 독서 기록 섹션으로 이동하는 버튼 */}
+            <div className="journal-list-link-container">
+                <Link to="/journals" className="journal-list-link-btn">
+                    나의 독서 기록 보러가기
+                </Link>
             </div>
 
             <div className="profile-footer-standalone">

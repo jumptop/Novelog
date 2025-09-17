@@ -139,3 +139,32 @@
     font-size: 1.5rem;
     color: #555;
 }
+
+/* 저널 리스트 링크 컨테이너 */
+.journal-list-link-container {
+    width: 100%;
+    max-width: 600px;
+    margin-top: 20px;
+    padding: 20px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.journal-list-link-btn {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #667eea;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.journal-list-link-btn:hover {
+    background-color: #5a67d8;
+}

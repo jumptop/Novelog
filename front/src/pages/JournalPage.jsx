@@ -87,6 +87,9 @@ const JournalPage = () => {
 
     return (
         <div className="journal-page-container">
+            <Link to="/main" className="back-to-main-btn">
+                &larr; 메인으로 돌아가기
+            </Link>
             <div className="journal-card">
                 <h1 className="journal-header">나의 독서 기록 생성</h1>
 

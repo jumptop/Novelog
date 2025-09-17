@@ -38,4 +38,32 @@ public class JournalController {
         List<JournalResponseDto> journals = journalService.getJournalsForUser(user.getEmail());
         return ResponseEntity.ok(journals);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<JournalResponseDto> getJournalById(@PathVariable Long id, HttpSession session) {
+        SessionUser user = (SessionUser) session.getAttribute("user");
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        try {
+            JournalResponseDto journal = journalService.getJournalEntryById(id, user.getEmail());
+            return ResponseEntity.ok(journal);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null); // 권한 없음 또는 기록 없음
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteJournal(@PathVariable Long id, HttpSession session) {
+        SessionUser user = (SessionUser) session.getAttribute("user");
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        try {
+            journalService.deleteJournalEntry(id, user.getEmail());
+            return ResponseEntity.noContent().build(); // 204 No Content
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // 권한 없음 또는 기록 없음
+        }
+    }
 }

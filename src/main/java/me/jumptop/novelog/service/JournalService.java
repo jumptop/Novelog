@@ -57,4 +57,28 @@ public class JournalService {
                 .map(JournalResponseDto::new)
                 .collect(Collectors.toList());
     }
+
+    @Transactional(readOnly = true)
+    public JournalResponseDto getJournalEntryById(Long id, String email) {
+        Journal journal = journalRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 독서 기록이 없습니다. id=" + id));
+
+        if (!journal.getUser().getEmail().equals(email)) {
+            throw new IllegalArgumentException("해당 독서 기록에 대한 접근 권한이 없습니다.");
+        }
+
+        return new JournalResponseDto(journal);
+    }
+
+    @Transactional
+    public void deleteJournalEntry(Long id, String email) {
+        Journal journal = journalRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 독서 기록이 없습니다. id=" + id));
+
+        if (!journal.getUser().getEmail().equals(email)) {
+            throw new IllegalArgumentException("해당 독서 기록에 대한 접근 권한이 없습니다.");
+        }
+
+        journalRepository.delete(journal);
+    }
 }
