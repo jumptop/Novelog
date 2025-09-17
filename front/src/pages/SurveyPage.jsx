@@ -37,7 +37,7 @@ const SurveyPage2_FavoriteBook = ({ answers, onAnswerChange }) => {
 
   return (
     <div className="question-group">
-      <h3>최근에 감명깊게 읽은 소설이 있다면?</h3>
+      <h3>최근에 감명깊게 읽은 소설/책이 있다면?</h3>
       <p>추천의 정확도를 높이는 데 큰 도움이 됩니다.</p>
       <input 
         type="text" 

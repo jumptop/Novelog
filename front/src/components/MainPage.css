@@ -72,7 +72,7 @@
   color: #2d3748;
 }
 
-.logout-btn, .info-btn {
+.logout-btn, .info-btn, .journal-btn-header {
   border: none;
   padding: 8px 16px;
   border-radius: 6px;
@@ -89,6 +89,8 @@
 .logout-btn:hover { background: #c53030; }
 .info-btn { background: #4a5568; }
 .info-btn:hover { background: #2d3748; }
+.journal-btn-header { background: #667eea; }
+.journal-btn-header:hover { background: #5a67d8; }
 
 /* 메인 컨텐츠를 중앙 정렬하기 위한 스타일 */
 .centered-content {

@@ -63,8 +63,8 @@ const RecommendationPage = () => {
       </Link>
 
       <div className="reco-header">
-        <h1>Gemini의 도서 추천</h1>
-        <p>당신의 설문 결과를 바탕으로 Gemini가 추천하는 책들입니다.</p>
+        <h1>당신을 위한 도서 추천</h1>
+        <p>당신의 설문 결과를 바탕으로 AI가 추천하는 책들입니다.</p>
         <button onClick={fetchRecommendations} className="reco-btn" disabled={loading}>
           {loading ? '추천받는 중...' : '새로 추천받기'}
         </button>
@@ -73,7 +73,7 @@ const RecommendationPage = () => {
       {loading ? (
         <div className="loading-container">
           <div className="loading-spinner"></div>
-          <p>Gemini가 추천 중...</p>
+          <p>AI가 추천 중...</p>
         </div>
       ) : (
         <>

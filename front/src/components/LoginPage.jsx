@@ -40,7 +40,7 @@ const LoginPage = () => {
       <div className="login-card">
         <div className="login-header">
           <h1 className="login-title">Novelog</h1>
-          <p className="login-subtitle">독서 기록과 추천을 위한 서비스</p>
+          <p className="login-subtitle">소설로 시작하는 책읽기</p>
         </div>
         
         <div className="login-content">

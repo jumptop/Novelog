@@ -98,7 +98,7 @@
 .podium-book-title {
   font-size: 1.2rem;
   font-weight: 700;
-  color: #2d3748;
+  color: black;
   margin: 0 0 4px 0;
 }
 
@@ -216,4 +216,8 @@
   justify-content: center;
   text-align: center;
   padding: 80px 24px;
+}
+
+.other-reco-section .book-title {
+  color: black;
 }

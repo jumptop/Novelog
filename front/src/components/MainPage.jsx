@@ -177,6 +177,7 @@ const MainPage = () => {
             </button>
             <div className="user-section">
               <img src={user.picture} alt="프로필" className="user-avatar" />
+              <Link to="/journal/new" className="journal-btn-header">기록하기</Link>
               <Link to="/profile" className="info-btn">내 정보</Link>
               <button className="logout-btn" onClick={handleLogout}>로그아웃</button>
             </div>

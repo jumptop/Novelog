@@ -5,29 +5,31 @@ import './ProfilePage.css';
 const ProfilePage = () => {
     const [user, setUser] = useState(null);
     const [answers, setAnswers] = useState([]);
+    const [journals, setJournals] = useState([]); // 저널 데이터 상태 추가
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // 유저 정보와 설문 답변 정보를 동시에 요청
-                const [userResponse, answersResponse] = await Promise.all([
+                const [userResponse, answersResponse, journalsResponse] = await Promise.all([
                     fetch('http://localhost:8080/api/user/me', { credentials: 'include' }),
-                    fetch('http://localhost:8080/api/user/answers', { credentials: 'include' })
+                    fetch('http://localhost:8080/api/user/answers', { credentials: 'include' }),
+                    fetch('http://localhost:8080/api/journals', { credentials: 'include' }) // 저널 데이터 요청
                 ]);
 
-                if (!userResponse.ok || !answersResponse.ok) {
-                    // 둘 중 하나라도 실패하면 로그인 페이지로 이동
+                if (!userResponse.ok || !answersResponse.ok || !journalsResponse.ok) {
                     navigate('/login');
                     return;
                 }
 
                 const userData = await userResponse.json();
                 const answersData = await answersResponse.json();
+                const journalsData = await journalsResponse.json();
 
                 setUser(userData);
                 setAnswers(answersData);
+                setJournals(journalsData);
             } catch (error) {
                 console.error('데이터를 가져오는 중 오류 발생:', error);
                 navigate('/login');
@@ -51,7 +53,7 @@ const ProfilePage = () => {
 
             if (response.ok) {
                 alert('설문이 초기화되었습니다. 설문 페이지로 이동합니다.');
-                navigate('/survey'); // 설문 페이지로 바로 이동
+                navigate('/survey');
             } else {
                 const errorText = await response.text();
                 alert(`초기화에 실패했습니다: ${errorText}`);
@@ -102,12 +104,34 @@ const ProfilePage = () => {
                         </p>
                     </section>
                 </main>
+            </div>
 
-                <footer className="profile-footer">
-                    <button onClick={handleResetSurvey} className="reset-survey-btn">
-                        설문 다시하기
-                    </button>
-                </footer>
+            {/* 나의 독서 기록 섹션 */}
+            <div className="journal-list-container">
+                <h2 className="journal-list-title">나의 독서 기록</h2>
+                {journals.length > 0 ? (
+                    <div className="journal-list">
+                        {journals.map(journal => (
+                            <div key={journal.id} className="journal-entry-card">
+                                <img src={journal.bookImage} alt={journal.bookTitle} className="journal-book-image" />
+                                <div className="journal-entry-content">
+                                    <h3>{journal.bookTitle}</h3>
+                                    <p className="journal-user-notes"><strong>나의 감상평:</strong> {journal.userNotes}</p>
+                                    <p className="journal-ai-text"><strong>AI 기록:</strong> {journal.aiJournal}</p>
+                                    <span className="journal-date">{new Date(journal.createdAt).toLocaleDateString()}</span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <p className="no-journals-message">아직 작성된 독서 기록이 없습니다.</p>
+                )}
+            </div>
+
+            <div className="profile-footer-standalone">
+                <button onClick={handleResetSurvey} className="reset-survey-btn">
+                    설문 다시하기
+                </button>
             </div>
         </div>
     );
